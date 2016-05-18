@@ -65,3 +65,5 @@ D:\Диплом\Client_v0.1\Client\bin\Debug\Newtonsoft.Json.dll
 D:\Диплом\Client_v0.1\Client\bin\Debug\Newtonsoft.Json.xml
 D:\Диплом\Client_v0.1\Client\obj\Debug\RoomWindow.g.cs
 D:\Диплом\Client_v0.1\Client\obj\Debug\RoomWindow.baml
+D:\Диплом\Client_v0.1\Client\obj\Debug\View\PassWindow.g.cs
+D:\Диплом\Client_v0.1\Client\obj\Debug\View\PassWindow.baml

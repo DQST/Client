@@ -45,10 +45,8 @@ namespace HelpLib.Wrapper
         private static int GetRandomPort()
         {
             for (int i = 14800; i < IPEndPoint.MaxPort; i++)
-            {
                 if (PortInUse(i) == false)
                     return i;
-            }
             return IPEndPoint.MinPort;
         }
 

@@ -15,22 +15,6 @@ namespace Client
     /// </summary>
     public partial class Rooms : Window
     {
-        private class Room
-        {
-            private bool havePass;
-            private bool youOwner;
-
-            public bool HavePass { get { return havePass; } }
-            public bool YouOwner { get { return youOwner; } }
-
-            public Room(bool havePass, bool youOwner)
-            {
-                this.havePass = havePass;
-                this.youOwner = youOwner;
-            }
-        }
-
-
         private OloService service;
 
         public Rooms()
@@ -92,9 +76,14 @@ namespace Client
             string name = listBox.SelectedItem as string;
             if (name != null)
             {
-                UDP.Send(OloProtocol.GetOlo("con_to", name).ToBytes(), 
-                    HelpLib.Config.Config.GlobalConfig.RemoteHost);
-                Close();
+                var inputPass = new PassWindow();
+                inputPass.ShowDialog();
+                if (inputPass.DialogResult.HasValue && inputPass.DialogResult.Value)
+                {
+                    UDP.Send(OloProtocol.GetOlo("con_to", name, inputPass.pswAnswer.Password).ToBytes(),
+                        HelpLib.Config.Config.GlobalConfig.RemoteHost);
+                    Close();
+                }
             }
         }
     }
