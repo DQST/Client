@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using HelpLib.Config;
 using HelpLib.Wrapper;
+using System.Net.NetworkInformation;
 
 namespace HelpLib.Wrapper
 {
@@ -23,8 +24,38 @@ namespace HelpLib.Wrapper
             instance = this;
         }
 
+        private static bool PortInUse(int port)
+        {
+            bool inUse = false;
+            var ipProperties = IPGlobalProperties.GetIPGlobalProperties();
+            var ipEndPoints = ipProperties.GetActiveUdpListeners();
+
+            foreach (var item in ipEndPoints)
+            {
+                if(item.Port == port)
+                {
+                    inUse = true;
+                    break;
+                }
+            }
+
+            return inUse;
+        }
+
+        private static int GetRandomPort()
+        {
+            for (int i = 14800; i < IPEndPoint.MaxPort; i++)
+            {
+                if (PortInUse(i) == false)
+                    return i;
+            }
+            return IPEndPoint.MinPort;
+        }
+
         public static UDP GetInstance(int port, string header)
         {
+            if (PortInUse(port) == true)
+                port = GetRandomPort();
             client = new UdpClient(port, AddressFamily.InterNetwork);
             work = true;
             Header = header;

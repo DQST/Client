@@ -10,7 +10,7 @@ using HelpLib.Wrapper;
 using System.Net.Sockets;
 using Client.Extensions;
 using Client.Manager;
-using System.Net;
+using System.Threading.Tasks;
 
 namespace Client
 {

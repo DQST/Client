@@ -15,6 +15,22 @@ namespace Client
     /// </summary>
     public partial class Rooms : Window
     {
+        private class Room
+        {
+            private bool havePass;
+            private bool youOwner;
+
+            public bool HavePass { get { return havePass; } }
+            public bool YouOwner { get { return youOwner; } }
+
+            public Room(bool havePass, bool youOwner)
+            {
+                this.havePass = havePass;
+                this.youOwner = youOwner;
+            }
+        }
+
+
         private OloService service;
 
         public Rooms()
@@ -41,12 +57,9 @@ namespace Client
                 {
                     var name = input.txtAnswer.Text;
                     var pass = input.pswAnswer.Password;
-                    if(name != "" && input.flag.IsChecked.Value == false)
-                        UDP.Send(OloProtocol.GetOlo("add_room", name).ToBytes(), 
-                            HelpLib.Config.Config.GlobalConfig.RemoteHost);
-                    else
-                        UDP.Send(OloProtocol.GetOlo("add_room", name, pass).ToBytes(),
-                            HelpLib.Config.Config.GlobalConfig.RemoteHost);
+                    if(!string.IsNullOrWhiteSpace(name))
+                        UDP.Send(OloProtocol.GetOlo("add_room", name, string.IsNullOrWhiteSpace(pass) ? "" : pass).ToBytes(),
+                                HelpLib.Config.Config.GlobalConfig.RemoteHost);
                 }
             };
 
@@ -63,8 +76,8 @@ namespace Client
         private void RoomList(params object[] args)
         {
             listBox.Items.Clear();
-            foreach (var item in args)
-                listBox.Items.Add(item);
+            for (int i = 0; i < args.Length - 1; i++)
+                listBox.Items.Add(args[i]);
         }
 
         private void delete_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
