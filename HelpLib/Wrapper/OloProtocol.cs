@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Reflection;
 using System.Collections;
+using System.Net;
 
 namespace HelpLib.Wrapper
 {
@@ -64,7 +65,7 @@ namespace HelpLib.Wrapper
             }
         }
 
-        public void Parse(IEnumerable collection)
+        public void Parse(IEnumerable collection, IPEndPoint inputIP)
         {
             var col = collection as Dictionary<string, object>;
             if (col.ContainsKey("ver") && col["ver"].Equals("0042"))
@@ -79,8 +80,9 @@ namespace HelpLib.Wrapper
                         var arr = args as JArray;
                         if (arr != null)
                         {
-                            var v = arr.ToObject<List<object>>().ToArray();
-                            methods[methodName].Invoke(obj, new object[] { v });
+                            var v = arr.ToObject<List<object>>();
+                            v.Add(inputIP);
+                            methods[methodName].Invoke(obj, new object[] { v.ToArray() });
                         }
                     }
                 }

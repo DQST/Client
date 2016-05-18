@@ -35,11 +35,5 @@ namespace Client.Manager
             get { return rooms[name]; }
             set { rooms[name] = value; }
         }
-
-        public void BroadcastAllUser(string name, params object[] args)
-        {
-            foreach (IPEndPoint addr in this[name])
-                UDP.Send(OloProtocol.GetOlo("push_message", args).ToBytes(), addr);
-        }
     }
 }

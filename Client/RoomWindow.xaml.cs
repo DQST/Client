@@ -56,7 +56,7 @@ namespace Client
         private void UDP_OnReceive(object sender, UdpReceiveResult e)
         {
             var col = OloProtocol.Encode(e.Buffer.ToStr());
-            service.Parse(col);
+            service.Parse(col, e.RemoteEndPoint);
         }
 
         [OloField(Name = "room_list")]

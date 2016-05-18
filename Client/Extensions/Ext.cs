@@ -10,17 +10,19 @@ namespace Client.Extensions
 {
     static class Ext
     {
-        public static UserUITabItem GetSelectTab(this TabControl control)
+        public static UserTabItem GetSelectTab(this TabControl control)
         {
             var tab = control.Items[control.SelectedIndex] as UserUITabItem;
-            return tab;
+            return tab.Header as UserTabItem;
         }
 
         public static UserUITabItem Exists(this TabControl control, string name)
         {
-            foreach (UserUITabItem item in control.Items)
-                if (item.Name.Equals(name))
+            foreach (UserUITabItem item in control.Items) {
+                var tab = item.Header as UserTabItem;
+                if (tab?.Header?.Text == name)
                     return item;
+            }
             return null;
         }
 

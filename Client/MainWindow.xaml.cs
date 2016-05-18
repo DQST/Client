@@ -53,22 +53,37 @@ namespace Client
         private void Receive(object sender, UdpReceiveResult res)
         {
             var data = OloProtocol.Encode(res.Buffer.ToStr());
-            service.Parse(data);
+            service.Parse(data, res.RemoteEndPoint);
         }
 
         [OloField(Name = "con_to")]
         private void ConTo(params object[] args)
         {
             var roomName = args[0].ToString();
-            if (!manager.IsExists(roomName))
+            var userIP = args[1].ToString().ToIP();
+            if (!manager.IsExists(roomName) && tabControl.Exists(roomName) == null)
             {
                 var userList = new Users();
-                userList.Add(args[1].ToString().ToIP());
+                userList.Add(userIP);
                 manager.Add(roomName, userList);
                 tabControl.AddTab(roomName, true);
             }
             else
-                manager[roomName].Add(args[1].ToString().ToIP());
+                manager[roomName].Add(userIP);
+        }
+
+        [OloField(Name = "push_message")]
+        private void PushMessage(params object[] args)
+        {
+            var roomName = args[0].ToString();
+            var userName = args[1].ToString();
+            var message = args[2].ToString();
+            var inputIP = args[3].ToString().ToIP();
+            if (manager.IsExists(roomName) && tabControl.Exists(roomName) != null)
+            {
+                tabControl.PushMessage(roomName, $"{userName}: {message}");
+                manager[roomName].BraodcastMessage(inputIP, roomName, userName, message);
+            }
         }
 
         private void sendButton_Click(object sender, RoutedEventArgs e)
@@ -78,9 +93,9 @@ namespace Client
             if (!string.IsNullOrWhiteSpace(text))
             {
                 var tab = tabControl.GetSelectTab();
-                var tabName = tab.Name;
-                manager.BroadcastAllUser(tabName, tabName, Config.GlobalConfig.UserName, text);
-                tabControl.PushMessage(tabName, text);
+                var roomName = tab.Header.Text;
+                manager[roomName].BraodcastMessage(roomName, Config.GlobalConfig.UserName, text);
+                tabControl.PushMessage(roomName, $"{Config.GlobalConfig.UserName}: {text}");
             }
         }
 
