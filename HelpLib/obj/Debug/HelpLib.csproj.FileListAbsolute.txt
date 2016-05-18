@@ -1,0 +1,15 @@
+D:\Диплом\Client\HelpLib\bin\Debug\HelpLib.dll
+D:\Диплом\Client\HelpLib\bin\Debug\HelpLib.pdb
+D:\Диплом\Client\HelpLib\obj\Debug\HelpLib.dll
+D:\Диплом\Client\HelpLib\obj\Debug\HelpLib.pdb
+d:\Client\HelpLib\bin\Debug\HelpLib.dll
+d:\Client\HelpLib\bin\Debug\HelpLib.pdb
+d:\Client\HelpLib\obj\Debug\HelpLib.dll
+d:\Client\HelpLib\obj\Debug\HelpLib.pdb
+d:\Диплом\Client\HelpLib\obj\Debug\HelpLib.csprojResolveAssemblyReference.cache
+d:\Диплом\Client_v0.1\HelpLib\bin\Debug\HelpLib.dll
+d:\Диплом\Client_v0.1\HelpLib\bin\Debug\HelpLib.pdb
+d:\Диплом\Client_v0.1\HelpLib\obj\Debug\HelpLib.dll
+d:\Диплом\Client_v0.1\HelpLib\obj\Debug\HelpLib.pdb
+D:\Диплом\Client_v0.1\HelpLib\bin\Debug\Newtonsoft.Json.dll
+D:\Диплом\Client_v0.1\HelpLib\bin\Debug\Newtonsoft.Json.xml

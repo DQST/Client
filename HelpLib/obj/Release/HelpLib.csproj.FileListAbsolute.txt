@@ -1,0 +1,4 @@
+D:\Диплом\Client\HelpLib\bin\Release\HelpLib.dll
+D:\Диплом\Client\HelpLib\bin\Release\HelpLib.pdb
+D:\Диплом\Client\HelpLib\obj\Release\HelpLib.dll
+D:\Диплом\Client\HelpLib\obj\Release\HelpLib.pdb

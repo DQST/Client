@@ -1,0 +1,7 @@
+.vs/*
+*.exe
+*.pdb
+*.json
+*.dll
+bin/*
+packages/*

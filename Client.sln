@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{1430C4C1-9270-4E72-9A9D-DBB3E2F4E2FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelpLib", "HelpLib\HelpLib.csproj", "{74E340AC-4C50-4467-81A8-09749561A501}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1430C4C1-9270-4E72-9A9D-DBB3E2F4E2FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1430C4C1-9270-4E72-9A9D-DBB3E2F4E2FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1430C4C1-9270-4E72-9A9D-DBB3E2F4E2FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1430C4C1-9270-4E72-9A9D-DBB3E2F4E2FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74E340AC-4C50-4467-81A8-09749561A501}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74E340AC-4C50-4467-81A8-09749561A501}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74E340AC-4C50-4467-81A8-09749561A501}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74E340AC-4C50-4467-81A8-09749561A501}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
