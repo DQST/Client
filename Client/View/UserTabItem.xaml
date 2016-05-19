@@ -11,19 +11,34 @@
             <ColumnDefinition MinWidth="100" Width="*"/>
             <ColumnDefinition Width="25"/>
         </Grid.ColumnDefinitions>
-        <TextBlock x:Name="Header" Text="TabItem" FontSize="15" 
-                   VerticalAlignment="Center" HorizontalAlignment="Center"/>
-        <Button x:Name="closeTabButton" Grid.Column="1">
-            <Button.Background>
-                <ImageBrush ImageSource="{DynamicResource ResourceKey=close_icon}"/>
-            </Button.Background>
+        <TextBlock x:Name="Header" 
+                   Text="TabItem" 
+                   FontSize="12" 
+                   VerticalAlignment="Center" 
+                   HorizontalAlignment="Center"/>
+        <Button x:Name="closeTabButton"
+                Grid.Column="1">
             <Button.Template>
                 <ControlTemplate>
-                    <!--<ControlTemplate.Triggers>
+                    <Grid>
+                        <Rectangle x:Name="buttonSurface" 
+                                   Fill="{x:Null}" 
+                                   Width="25" 
+                                   Height="25"
+                                   HorizontalAlignment="Center" 
+                                   VerticalAlignment="Center"/>
+                        <Label x:Name="contentSurface" 
+                               Content="&#x2716;" 
+                               HorizontalAlignment="Center" 
+                               Foreground="Black" 
+                               VerticalAlignment="Center"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="image" Property="Source" Value="C:\Users\Дмитрий\Pictures\close_icon_red.png"/>
+                            <Setter TargetName="buttonSurface" Property="Fill" Value="#FFFB3B3B"/>
+                            <Setter TargetName="contentSurface" Property="Foreground" Value="White"/>
                         </Trigger>
-                    </ControlTemplate.Triggers>-->
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Button.Template>
         </Button>
