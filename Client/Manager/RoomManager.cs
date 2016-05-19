@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Net;
-using Client.Extensions;
-using HelpLib.Wrapper;
+using System.Collections;
 
 namespace Client.Manager
 {
-    class RoomManager
+    class RoomManager : IEnumerable, IDisposable
     {
         private Dictionary<string, Users> rooms = new Dictionary<string, Users>();
+        
+        public List<string> Rooms { get { return rooms.Keys.ToList(); } }
 
         public void Add(string name, Users room)
         {
@@ -28,6 +28,18 @@ namespace Client.Manager
             if (rooms.ContainsKey(name))
                 return true;
             return false;
+        }
+
+        public void Dispose()
+        {
+            foreach (var item in rooms.Keys)
+                this[item].Dispose();
+            rooms.Clear();
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            return rooms.Keys.GetEnumerator();
         }
 
         public Users this[string name]

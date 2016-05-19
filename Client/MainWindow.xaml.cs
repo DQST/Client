@@ -20,6 +20,8 @@ namespace Client
         private ConfigFile config;
         private UDP udp;
         private RoomManager manager;
+        private bool bridgeWork = true;
+        // TODO: need use threadpool to send empty messages to users
 
         public MainWindow()
         {
@@ -41,12 +43,32 @@ namespace Client
             }
             finally
             {
-                Config.GlobalConfig = config;
                 service = new OloService(this);
                 manager = new RoomManager();
-                udp = UDP.GetInstance(config.LocalHost.Port, "0042");
+                udp = UDP.GetInstance(ref config);
+                Config.GlobalConfig = config;
                 UDP.OnReceive += Receive;
                 udp.Run();
+
+                tabControl.AddTab("Debug", false);
+                tabControl.PushMessage("Debug", $"local ip: {config.LocalHost.ToString()}");
+
+                ThreadPool.QueueUserWorkItem(Bridge);
+                Title = $"{Title} @ {config.UserName}";
+            }
+        }
+
+        private void Bridge(object o)
+        {
+            while (bridgeWork)
+            {
+                for (int i = 0; i < manager.Rooms.Count; i++)
+                {
+                    var name = manager.Rooms[i];
+                    var users = manager[name];
+                    users.BraodcastNop();
+                    Thread.Sleep(100);
+                }
             }
         }
 
@@ -86,9 +108,16 @@ namespace Client
             }
         }
 
+        [OloField(Name = "nop")]
+        private void NopMsg(params object[] args)
+        {
+            
+        }
+
         private void sendButton_Click(object sender, RoutedEventArgs e)
         {
             var text = inputTextBox.Text;
+            inputTextBox.Focus();
             inputTextBox.Clear();
             if (!string.IsNullOrWhiteSpace(text))
             {
@@ -113,7 +142,9 @@ namespace Client
 
         public void Dispose()
         {
+            bridgeWork = false;
             Config.Save("settings.json", Config.GlobalConfig);
+            manager.Dispose();
             udp.Dispose();
         }
     }

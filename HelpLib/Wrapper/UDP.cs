@@ -16,7 +16,6 @@ namespace HelpLib.Wrapper
         private static bool work;
 
         public static bool IsWork { get { return work; } }
-        public static string Header { get; private set; }
         public static event EventHandler<UdpReceiveResult> OnReceive;
 
         private UDP()
@@ -50,13 +49,12 @@ namespace HelpLib.Wrapper
             return IPEndPoint.MinPort;
         }
 
-        public static UDP GetInstance(int port, string header)
+        public static UDP GetInstance(ref ConfigFile config)
         {
-            if (PortInUse(port) == true)
-                port = GetRandomPort();
-            client = new UdpClient(port, AddressFamily.InterNetwork);
+            if (PortInUse(config.LocalHost.Port) == true)
+                config.LocalHost.Port = GetRandomPort();
+            client = new UdpClient(config.LocalHost.Port, AddressFamily.InterNetwork);
             work = true;
-            Header = header;
             return instance ?? new UDP();
         }
 

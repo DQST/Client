@@ -47,10 +47,10 @@ namespace Client.Extensions
                 var grid = rez.Content as Grid;
                 foreach (var i in grid?.Children)
                 {
-                    var list = i as ListBox;
-                    if (list != null && list.Name == "msgListBox")
+                    var listBox = i as ListBox;
+                    if (listBox != null && listBox.Name == "msgListBox")
                     {
-                        list.Items.Add(message);
+                        listBox.Items.Add(message);
                         return;
                     }
                 }
