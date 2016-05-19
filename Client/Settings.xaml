@@ -5,14 +5,31 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
-        Title="Settings" Height="181.301" Width="295.757" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" Loaded="OnLoad">
-    <Grid Margin="-0.184,0,0.184,0">
-        <TextBox x:Name="userNameText_Box" Margin="84.333,29.717,8.756,0" TextWrapping="Wrap" Height="17.333" VerticalAlignment="Top"/>
-        <Label x:Name="label" Content="Name:" HorizontalAlignment="Left" Height="27.667" Margin="10,21.05,0,0" VerticalAlignment="Top" Width="56.184"/>
-        <Label x:Name="label1" Content="Local IP:" HorizontalAlignment="Left" Margin="10,48.717,0,0" Width="56.667" Height="24.667" VerticalAlignment="Top"/>
-        <Button x:Name="save_button" Content="Save" Margin="0,0,10,8" Height="22.667" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="73.517" Click="OnCkickSave_button"/>
-        <TextBox x:Name="localIPText_Box" Margin="84.333,55.384,8.756,0" TextWrapping="Wrap" Height="17.333" VerticalAlignment="Top"/>
-        <Label x:Name="label1_Copy" Content="Remote IP:" HorizontalAlignment="Left" Margin="10,75.384,0,0" Width="69.333" Height="26" VerticalAlignment="Top"/>
-        <TextBox x:Name="remoteIPText_Box" Margin="84.333,82.051,8.756,0" TextWrapping="Wrap" Height="17.333" VerticalAlignment="Top"/>
+        Title="Settings" Height="461" Width="577.939" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+        <TreeView Name="treeView" Grid.Column="0">
+            <TreeViewItem Header="Settings">
+                <TreeViewItem Name="UserItem" Header="User"/>
+                <TreeViewItem Name="NetworkItem" Header="Network"/>
+            </TreeViewItem>
+        </TreeView>
+        <StackPanel Name="User" Grid.Column="1" Margin="10" Visibility="Hidden">
+            <WrapPanel Margin="0,0,0,10">
+                <Label Margin="0,0,26,0">Local IP:</Label>
+                <TextBox Width="150"></TextBox>
+            </WrapPanel>
+            <WrapPanel Margin="0,0,0,10">
+                <Label>Remote host:</Label>
+                <TextBox Width="150"></TextBox>
+            </WrapPanel>
+            <WrapPanel>
+                <Label Margin="0,0,14,0">Nickname:</Label>
+                <TextBox Width="150"></TextBox>
+            </WrapPanel>
+        </StackPanel>
     </Grid>
 </Window>

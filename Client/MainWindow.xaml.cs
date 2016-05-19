@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Threading;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Web.Script.Serialization;
 using HelpLib.Config;
 using HelpLib.Wrapper;
 using System.Net.Sockets;
 using Client.Extensions;
 using Client.Manager;
-using System.Threading.Tasks;
 
 namespace Client
 {
@@ -21,7 +16,6 @@ namespace Client
         private UDP udp;
         private RoomManager manager;
         private bool bridgeWork = true;
-        // TODO: need use threadpool to send empty messages to users
 
         public MainWindow()
         {
@@ -137,7 +131,9 @@ namespace Client
 
         private void settingsButton_Click(object sender, RoutedEventArgs e)
         {
-
+            var settings = new Settings();
+            settings.Owner = this;
+            settings.ShowDialog();
         }
 
         public void Dispose()
