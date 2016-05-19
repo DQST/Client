@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Web.Script.Serialization;
 using System.Collections;
+using System.Security.Cryptography;
 
 namespace Client
 {
@@ -42,12 +43,21 @@ namespace Client
                     var name = input.txtAnswer.Text;
                     var pass = input.pswAnswer.Password;
                     if(!string.IsNullOrWhiteSpace(name))
-                        UDP.Send(OloProtocol.GetOlo("add_room", name, string.IsNullOrWhiteSpace(pass) ? "" : pass).ToBytes(),
+                        UDP.Send(OloProtocol.GetOlo("add_room", name, GetMD5Hash(pass)).ToBytes(),
                                 HelpLib.Config.Config.GlobalConfig.RemoteHost);
                 }
             };
 
             listBox.MouseDoubleClick += (s, e) => connect_Executed(s, null);
+        }
+
+        private string GetMD5Hash(string str)
+        {
+            using (MD5 md5 = MD5.Create())
+            {
+                var bytes = md5.ComputeHash(str.ToBytes());
+                return bytes.ToStr();
+            }
         }
 
         private void UDP_OnReceive(object sender, UdpReceiveResult e)
@@ -80,7 +90,8 @@ namespace Client
                 inputPass.ShowDialog();
                 if (inputPass.DialogResult.HasValue && inputPass.DialogResult.Value)
                 {
-                    UDP.Send(OloProtocol.GetOlo("con_to", name, inputPass.pswAnswer.Password).ToBytes(),
+                    var pass = inputPass.pswAnswer.Password;
+                    UDP.Send(OloProtocol.GetOlo("con_to", name, GetMD5Hash(pass)).ToBytes(),
                         HelpLib.Config.Config.GlobalConfig.RemoteHost);
                     Close();
                 }
