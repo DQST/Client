@@ -25,8 +25,7 @@ namespace Client
 
             UDP.OnReceive += UDP_OnReceive;
 
-            updateButton.Click += (s, e) => UDP.Send(OloProtocol.GetOlo("get_rooms", null).ToBytes(),
-                HelpLib.Config.Config.GlobalConfig.RemoteHost);
+            updateButton.Click += UpdateButton_Click;
 
             Closed += (s, e) =>
             {
@@ -49,6 +48,14 @@ namespace Client
             };
 
             listBox.MouseDoubleClick += (s, e) => connect_Executed(s, null);
+
+            UpdateButton_Click(this, null);
+        }
+
+        private void UpdateButton_Click(object sender, RoutedEventArgs e)
+        {
+            UDP.Send(OloProtocol.GetOlo("get_rooms", null).ToBytes(),
+                HelpLib.Config.Config.GlobalConfig.RemoteHost);
         }
 
         private string GetMD5Hash(string str)

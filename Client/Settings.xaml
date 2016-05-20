@@ -5,7 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
-        Title="Settings" Height="461" Width="577.939" WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+        Title="Settings" 
+        Height="461" 
+        Width="577.939" 
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="#F1F2F4">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>

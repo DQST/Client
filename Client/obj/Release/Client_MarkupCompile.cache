@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-d:\Диплом\Client\Client\obj\Release\
+d:\Диплом\Client_v0.1\Client\obj\Release\
 Client
 none
 false
 TRACE
-d:\Диплом\Client\Client\App.xaml
-4-116159231
+d:\Диплом\Client_v0.1\Client\App.xaml
+6-1704561262
 
-111586607366
-15-1783916023
-DialogBox.xaml;MainWindow.xaml;Rooms.xaml;Settings.xaml;
+14-309825100
+161280517457
+MainWindow.xaml;RoomWindow.xaml;Settings.xaml;View\PassWindow.xaml;View\InputDialog.xaml;View\UserTabItem.xaml;
 
 False
 

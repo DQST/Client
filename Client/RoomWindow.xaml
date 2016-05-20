@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
-        Title="Rooms" 
+        Title="Rooms"
+        ResizeMode="NoResize"
+        Icon="{x:Null}"
         WindowStartupLocation="CenterOwner"
         SizeToContent="WidthAndHeight">
     <Window.CommandBindings>
@@ -13,13 +15,40 @@
         <CommandBinding Command="Open" Executed="connect_Executed"/>
     </Window.CommandBindings>
     <Grid>
-        <StackPanel>
+        <StackPanel Background="#F1F2F4">
             <Button x:Name="updateButton" 
-                    Content="@" Width="25" 
-                    Height="25" 
-                    HorizontalAlignment="Right"/>
+                    Width="30"
+                    Height="30"
+                    HorizontalAlignment="Right"
+                    ToolTip="Update button">
+                <Button.Template>
+                    <ControlTemplate>
+                        <Grid>
+                            <Rectangle x:Name="buttonSurface" 
+                                       Fill="{x:Null}"
+                                       StrokeThickness="0"
+                                       Stroke="#FF919191"/>
+                            <TextBlock x:Name="contentSurface" 
+                                       Text="&#10227;"  
+                                       Foreground="Black"
+                                       TextAlignment="Center" 
+                                       FontWeight="Normal" 
+                                       FontSize="20"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="buttonSurface" Property="Fill" Value="#FF7CC5C5"></Setter>
+                                <Setter TargetName="contentSurface" Property="Foreground" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
             <ListBox x:Name="listBox" 
-                     Height="250" Width="300">
+                     Height="250" 
+                     Width="300" 
+                     BorderThickness="2"
+                     ToolTip="Right click to create new roon">
                 <ListBox.ContextMenu>
                     <ContextMenu>
                         <MenuItem x:Name="createButton" Header="Create"/>
@@ -27,6 +56,7 @@
                 </ListBox.ContextMenu>
                 <ListBox.Resources>
                     <Style TargetType="{x:Type ListBoxItem}">
+                        <Setter Property="ToolTip" Value="Double click to connect"></Setter>
                         <Setter Property="Background" Value="LightSteelBlue"/>
                         <Setter Property="Margin" Value="1"/>
                         <Setter Property="Padding" Value="5"/>

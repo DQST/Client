@@ -7,9 +7,9 @@
         mc:Ignorable="d"
         Title="Chat v0.1" 
         Width="600" Height="400" 
-        MinWidth="600" MinHeight="400" 
-        Background="White" 
-        WindowStartupLocation="CenterScreen">
+        MinWidth="600" MinHeight="400"
+        WindowStartupLocation="CenterScreen"
+        Background="#F1F2F4">
     <Grid Margin="5,0,5,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
@@ -33,14 +33,27 @@
                 <ColumnDefinition Width="80"/>
             </Grid.ColumnDefinitions>
             <TextBox x:Name="inputTextBox"/>
-            <Button x:Name="sendButton" Grid.Column="1" Content="Send" Click="sendButton_Click">
+            <Button x:Name="sendButton" 
+                    Grid.Column="1" 
+                    Content="Send" 
+                    Click="sendButton_Click">
                 <Button.Template>
                     <ControlTemplate>
                         <Grid>
-                            <Ellipse x:Name="buttonSurface" Fill="#FF65D4F9" Width="70" Height="70"
-								HorizontalAlignment="Center" VerticalAlignment="Center" StrokeThickness="0" Stroke="#FF96C750"/>
-                            <Label x:Name="contentSurface" Content="Send" HorizontalAlignment="Center" Foreground="Black"
-								VerticalAlignment="Center" FontWeight="Bold"/>
+                            <Ellipse x:Name="buttonSurface" 
+                                     Fill="#FF65D4F9" 
+                                     Width="70" 
+                                     Height="70"
+                                     HorizontalAlignment="Center" 
+                                     VerticalAlignment="Center" 
+                                     StrokeThickness="0" 
+                                     Stroke="#FF96C750"/>
+                            <Label x:Name="contentSurface" 
+                                   Content="Send" 
+                                   HorizontalAlignment="Center" 
+                                   Foreground="Black"
+                                   VerticalAlignment="Center" 
+                                   FontWeight="Bold"/>
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
