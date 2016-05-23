@@ -24,7 +24,8 @@ namespace Client.Manager
 
         public void Add(string name, Users room)
         {
-            rooms.Add(name, room);
+            if (!rooms.ContainsKey(name))
+                rooms.Add(name, room);
         }
 
         public bool Remove(string name)
