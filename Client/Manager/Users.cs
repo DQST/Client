@@ -10,10 +10,11 @@ namespace Client.Manager
     class Users : IEnumerable, IDisposable
     {
         private List<IPEndPoint> users = new List<IPEndPoint>();
-        
+
         public void Add(IPEndPoint ip)
         {
-            users.Add(ip);
+            if (!users.Contains(ip))
+                users.Add(ip);
         }
 
         public IEnumerator GetEnumerator()
@@ -49,7 +50,7 @@ namespace Client.Manager
             lock (users)
             {
                 foreach (var ip in users)
-                    if(!ip.Equals(exceptionIP))
+                    if (!ip.Equals(exceptionIP))
                         UDP.Send(OloProtocol.GetOlo("push_message", args).ToBytes(), ip);
             }
         }
