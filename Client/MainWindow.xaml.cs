@@ -135,7 +135,7 @@ namespace Client
             var settings = new Settings();
             settings.Owner = this;
             settings.ShowDialog();
-            Title = $"{Title} @ {Config.GlobalConfig.UserName}";
+            Title = $"{Title.Split('@')[0]} @ {Config.GlobalConfig.UserName}";
         }
 
         public void Dispose()
