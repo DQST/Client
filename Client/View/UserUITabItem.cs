@@ -7,15 +7,15 @@ namespace Client.View
     {
         private RoomManager manager;
 
-        public UserUITabItem(string title, RoomManager manager, bool isClosed)
+        public UserUITabItem(string title, bool isClosed)
         {
             var tab = new UserTabItem(title, isClosed);
-            this.manager = manager;
+            manager = RoomManager.GetInstance();
             tab.OnClose += (sender, e) => 
             {
                 var tabControl = GetParentTabControl();
                 tabControl?.Items?.Remove(this);
-                this.manager?.Remove(title);
+                manager?.Remove(title);
             };
             Header = tab;
         }
