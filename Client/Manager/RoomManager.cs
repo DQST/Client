@@ -8,8 +8,19 @@ namespace Client.Manager
     class RoomManager : IEnumerable, IDisposable
     {
         private Dictionary<string, Users> rooms = new Dictionary<string, Users>();
-        
+        private static RoomManager instance;
+
         public List<string> Rooms { get { return rooms.Keys.ToList(); } }
+
+        private RoomManager()
+        {
+            instance = this;
+        }
+
+        public static RoomManager GetInstance()
+        {
+            return instance ?? new RoomManager();
+        }
 
         public void Add(string name, Users room)
         {
