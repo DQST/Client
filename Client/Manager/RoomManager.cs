@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Collections;
 
 namespace Client.Manager
@@ -18,9 +16,9 @@ namespace Client.Manager
             rooms.Add(name, room);
         }
 
-        public void Remove(string name)
+        public bool Remove(string name)
         {
-            rooms.Remove(name);
+            return rooms.Remove(name);
         }
 
         public bool IsExists(string name)
