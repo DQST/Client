@@ -113,10 +113,11 @@ namespace Client
             var text = inputTextBox.Text;
             inputTextBox.Focus();
             inputTextBox.Clear();
-            if (!string.IsNullOrWhiteSpace(text))
+
+            var tab = tabControl.GetSelectTab();
+            var roomName = tab.Header.Text;
+            if (!string.IsNullOrWhiteSpace(text) && manager.IsExists(roomName))
             {
-                var tab = tabControl.GetSelectTab();
-                var roomName = tab.Header.Text;
                 manager[roomName].BraodcastMessage(roomName, Config.GlobalConfig.UserName, text);
                 tabControl.PushMessage(roomName, $"{Config.GlobalConfig.UserName}: {text}");
             }

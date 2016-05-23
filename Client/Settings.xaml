@@ -6,8 +6,8 @@
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
         Title="Settings" 
-        Height="461" 
-        Width="577.939" 
+        Height="196" 
+        Width="392.97" 
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         Background="#F1F2F4">
@@ -22,19 +22,35 @@
                 <TreeViewItem Name="NetworkItem" Header="Network"/>
             </TreeViewItem>
         </TreeView>
-        <StackPanel Name="User" Grid.Column="1" Margin="10" Visibility="Hidden">
+        <StackPanel Name="User" 
+                    Grid.Column="1"
+                    Visibility="Visible" 
+                    Margin="5">
+            <WrapPanel Margin="0,10,0,10">
+                <Label Margin="0,0,14,0">Nickname:</Label>
+                <TextBox x:Name="userName" Width="160"/>
+            </WrapPanel>
             <WrapPanel Margin="0,0,0,10">
                 <Label Margin="0,0,26,0">Local IP:</Label>
-                <TextBox Width="150"></TextBox>
+                <TextBox x:Name="localIP" Width="160"/>
             </WrapPanel>
             <WrapPanel Margin="0,0,0,10">
                 <Label>Remote host:</Label>
-                <TextBox Width="150"></TextBox>
+                <TextBox x:Name="remoteHost" Width="160"/>
             </WrapPanel>
-            <WrapPanel>
-                <Label Margin="0,0,14,0">Nickname:</Label>
-                <TextBox Width="150"></TextBox>
+            <WrapPanel HorizontalAlignment="Right">
+                <Button IsDefault="True" Width="50" Margin="0,0,10,0" Click="saveButton_Click">Save</Button>
+                <Button IsCancel="True" Width="50" Margin="0,0,10,0">Cancel</Button>
             </WrapPanel>
+        </StackPanel>
+        <StackPanel Name="Network" 
+                    Grid.Column="1"
+                    Visibility="Hidden"
+                    Margin="5"
+                    IsEnabled="False">
+            <TextBlock>Enabled:</TextBlock>
+            <CheckBox IsChecked="False" IsThreeState="False">UPnP</CheckBox>
+            <CheckBox IsChecked="False" IsThreeState="False">Nat-PNP</CheckBox>
         </StackPanel>
     </Grid>
 </Window>
