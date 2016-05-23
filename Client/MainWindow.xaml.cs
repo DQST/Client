@@ -26,6 +26,8 @@ namespace Client
                 Close();
             };
 
+            exitButton.Click += (s, e) => OnClosed(e);
+
             try
             {
                 Config.Load("settings.json", out config);
