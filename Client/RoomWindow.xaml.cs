@@ -54,6 +54,7 @@ namespace Client
 
         private void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
+            listBox.Items.Clear();
             UDP.Send(OloProtocol.GetOlo("get_rooms", null).ToBytes(),
                 HelpLib.Config.Config.GlobalConfig.RemoteHost);
         }
