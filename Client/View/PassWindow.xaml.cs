@@ -22,6 +22,7 @@ namespace Client.View
         public PassWindow()
         {
             InitializeComponent();
+            pswAnswer.Focus();
             btnDialogOk.Click += (s, e) =>
             {
                 DialogResult = true;
