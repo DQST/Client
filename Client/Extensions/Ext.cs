@@ -27,11 +27,11 @@ namespace Client.Extensions
             return null;
         }
 
-        public static void AddTab(this TabControl control, string name, RoomManager manager, bool isClosed = true)
+        public static void AddTab(this TabControl control, string name, bool isClosed = true)
         {
             if(Exists(control, name) == null)
             {
-                var tab = new UserUITabItem(name, manager, isClosed);
+                var tab = new UserUITabItem(name, isClosed);
                 var grid = new Grid();
                 grid.Children.Add(new ListBox() { Name = "msgListBox" });
                 tab.Content = grid;
