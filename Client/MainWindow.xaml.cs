@@ -44,7 +44,7 @@ namespace Client
                 UDP.OnReceive += Receive;
                 udp.Run();
 
-                tabControl.AddTab("Debug", false);
+                tabControl.AddTab("Debug", manager, false);
                 tabControl.PushMessage("Debug", $"local ip: {config.LocalHost.ToString()}");
 
                 ThreadPool.QueueUserWorkItem(Bridge);
@@ -82,7 +82,7 @@ namespace Client
                 var userList = new Users();
                 userList.Add(userIP);
                 manager.Add(roomName, userList);
-                tabControl.AddTab(roomName, true);
+                tabControl.AddTab(roomName, manager);
             }
             else
                 manager[roomName].Add(userIP);
