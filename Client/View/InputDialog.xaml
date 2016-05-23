@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client.View"
         mc:Ignorable="d"
-        Title="InputDialog" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen">
+        Title="InputDialog" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Grid Margin="15">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -19,8 +19,9 @@
         </Grid.RowDefinitions>
         <Label Name="lblQuestion">Question:</Label>
         <TextBox Name="txtAnswer" Grid.Row="1" MinWidth="250"/>
-        <CheckBox Name="flag" Grid.Row="2" IsThreeState="False" Content="Password"/>
+        <CheckBox Name="flag" Grid.Row="2" IsThreeState="False" Content="Private"/>
         <StackPanel Name="stackPanel" Grid.Row="3" Visibility="Collapsed">
+            <Label Name="pswLabel">Password:</Label>
             <PasswordBox Name="pswAnswer" Password=""/>
         </StackPanel>
         <WrapPanel Grid.Row="4" Grid.ColumnSpan="2" HorizontalAlignment="Right" Margin="0,15,0,0">
