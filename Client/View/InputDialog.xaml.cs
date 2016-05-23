@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -26,8 +26,18 @@ namespace Client.View
             flag.Unchecked += Flag_Checked;
             btnDialogOk.Click += (s, e) =>
             {
-                DialogResult = true;
-                Close();
+                if (Regex.IsMatch(pswAnswer.Password, @"^[a-zA-Z0-9]+$") && !string.IsNullOrWhiteSpace(txtAnswer.Text))
+                {
+                    DialogResult = true;
+                    Close();
+                }
+                else
+                {
+                    MessageBox.Show("Incorrect password! Password must be state only from select characters:\n a-z or A-Z and numbers from 0-9.",
+                        "Icorrect password", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    pswAnswer.Clear();
+                    pswAnswer.Focus();
+                }
             };
             btnDialogCancel.Click += (s, e) =>
             {
@@ -36,18 +46,18 @@ namespace Client.View
             };
         }
 
+        public InputDialog(string title, string header) : this()
+        {
+            Title = title;
+            lblQuestion.Content = header;
+        }
+
         private void Flag_Checked(object sender, RoutedEventArgs e)
         {
             if (flag.IsChecked.Value == true)
                 stackPanel.Visibility = Visibility.Visible;
             else
                 stackPanel.Visibility = Visibility.Collapsed;
-        }
-
-        public InputDialog(string title, string header) : this()
-        {
-            Title = title;
-            lblQuestion.Content = header;
         }
     }
 }
