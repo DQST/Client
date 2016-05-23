@@ -38,13 +38,13 @@ namespace Client
             finally
             {
                 service = new OloService(this);
-                manager = new RoomManager();
+                manager = RoomManager.GetInstance();
                 udp = UDP.GetInstance(ref config);
                 Config.GlobalConfig = config;
                 UDP.OnReceive += Receive;
                 udp.Run();
 
-                tabControl.AddTab("Debug", manager, false);
+                tabControl.AddTab("Debug", false);
                 tabControl.PushMessage("Debug", $"local ip: {config.LocalHost.ToString()}");
 
                 ThreadPool.QueueUserWorkItem(Bridge);
@@ -82,7 +82,7 @@ namespace Client
                 var userList = new Users();
                 userList.Add(userIP);
                 manager.Add(roomName, userList);
-                tabControl.AddTab(roomName, manager);
+                tabControl.AddTab(roomName);
             }
             else
                 manager[roomName].Add(userIP);
