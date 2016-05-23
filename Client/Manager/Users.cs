@@ -21,9 +21,9 @@ namespace Client.Manager
             return users.GetEnumerator();
         }
 
-        public void RemoveAt(IPEndPoint ip)
+        public bool Remove(IPEndPoint ip)
         {
-            users.Remove(ip);
+            return users.Remove(ip);
         }
 
         public void BraodcastMessage(params object[] args)
