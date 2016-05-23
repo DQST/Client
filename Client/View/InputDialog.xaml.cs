@@ -11,6 +11,7 @@ namespace Client.View
         public InputDialog()
         {
             InitializeComponent();
+            txtAnswer.Focus();
             flag.Checked += Flag_Checked;
             flag.Unchecked += Flag_Checked;
             btnDialogOk.Click += (s, e) =>
