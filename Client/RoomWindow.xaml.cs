@@ -1,12 +1,8 @@
 ﻿using Client.Extensions;
 using Client.View;
 using HelpLib.Wrapper;
-using System.Collections.Generic;
 using System.Windows;
 using System.Net.Sockets;
-using System.Text;
-using System.Web.Script.Serialization;
-using System.Collections;
 using System.Security.Cryptography;
 
 namespace Client
