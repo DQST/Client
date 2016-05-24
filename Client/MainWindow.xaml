@@ -32,7 +32,9 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="80"/>
             </Grid.ColumnDefinitions>
-            <TextBox x:Name="inputTextBox"/>
+            <TextBox x:Name="inputTextBox" 
+                     TextWrapping="Wrap" 
+                     AcceptsReturn="True"/>
             <Button x:Name="sendButton" 
                     Grid.Column="1" 
                     Content="Send" 
