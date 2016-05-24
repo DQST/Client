@@ -5,7 +5,6 @@ using HelpLib.Config;
 using HelpLib.Wrapper;
 using System.Net.Sockets;
 using Client.Extensions;
-using Client.Manager;
 
 namespace Client
 {
@@ -14,7 +13,6 @@ namespace Client
         private OloService service;
         private ConfigFile config;
         private UDP udp;
-        private RoomManager manager;
         private bool bridgeWork = true;
 
         public MainWindow()
@@ -40,7 +38,6 @@ namespace Client
             finally
             {
                 service = new OloService(this);
-                manager = RoomManager.GetInstance();
                 udp = UDP.GetInstance(ref config);
                 Config.GlobalConfig = config;
                 UDP.OnReceive += Receive;
@@ -130,7 +127,6 @@ namespace Client
         {
             bridgeWork = false;
             Config.Save("settings.json", Config.GlobalConfig);
-            manager.Dispose();
             udp.Dispose();
         }
     }
