@@ -52,6 +52,8 @@ namespace Client.Extensions
                     if (listBox != null && listBox.Name == "msgListBox")
                     {
                         listBox.Items.Add(message);
+                        listBox.SelectedIndex = listBox.Items.Count - 1;
+                        listBox.ScrollIntoView(listBox.SelectedItem);
                         return;
                     }
                 }
