@@ -8,4 +8,3 @@ d:\Диплом\Client_v0.1\HelpLib\bin\Release\Newtonsoft.Json.dll
 d:\Диплом\Client_v0.1\HelpLib\bin\Release\Newtonsoft.Json.xml
 d:\Диплом\Client_v0.1\HelpLib\obj\Release\HelpLib.dll
 d:\Диплом\Client_v0.1\HelpLib\obj\Release\HelpLib.pdb
-D:\Диплом\Client_v0.1\HelpLib\obj\Release\HelpLib.csprojResolveAssemblyReference.cache
