@@ -16,17 +16,21 @@ namespace Client.View
             flag.Unchecked += Flag_Checked;
             btnDialogOk.Click += (s, e) =>
             {
-                if (Regex.IsMatch(pswAnswer.Password, @"^[a-zA-Z0-9]+$") && !string.IsNullOrWhiteSpace(txtAnswer.Text))
+                if (flag.IsChecked.HasValue && flag.IsChecked.Value)
+                {
+                    if (!Regex.IsMatch(pswAnswer.Password, @"^[a-zA-Z0-9]+$"))
+                    {
+                        MessageBox.Show("Incorrect password! Password must be state only from select characters:\n a-z or A-Z and numbers from 0-9.",
+                            "Icorrect password", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        pswAnswer.Clear();
+                        pswAnswer.Focus();
+                    }
+                }
+
+                if (!string.IsNullOrWhiteSpace(txtAnswer.Text))
                 {
                     DialogResult = true;
                     Close();
-                }
-                else
-                {
-                    MessageBox.Show("Incorrect password! Password must be state only from select characters:\n a-z or A-Z and numbers from 0-9.",
-                        "Icorrect password", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    pswAnswer.Clear();
-                    pswAnswer.Focus();
                 }
             };
             btnDialogCancel.Click += (s, e) =>
