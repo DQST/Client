@@ -75,16 +75,8 @@ namespace Client
         private void ConTo(params object[] args)
         {
             var roomName = args[0].ToString();
-            var userIP = args[1].ToString().ToIP();
-            if (!manager.IsExists(roomName) && tabControl.Exists(roomName) == null)
-            {
-                var userList = new Users();
-                userList.Add(userIP);
-                manager.Add(roomName, userList);
+            if (tabControl.Exists(roomName) == null)
                 tabControl.AddTab(roomName);
-            }
-            else
-                manager[roomName].Add(userIP);
         }
 
         [OloField(Name = "push_message")]
@@ -93,12 +85,8 @@ namespace Client
             var roomName = args[0].ToString();
             var userName = args[1].ToString();
             var message = args[2].ToString();
-            var inputIP = args[3].ToString().ToIP();
-            if (manager.IsExists(roomName) && tabControl.Exists(roomName) != null)
-            {
+            if (tabControl.Exists(roomName) != null)
                 tabControl.PushMessage(roomName, $"{userName}: {message}");
-                manager[roomName].BraodcastMessage(inputIP, roomName, userName, message);
-            }
         }
 
         [OloField(Name = "nop")]
