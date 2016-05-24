@@ -5,7 +5,7 @@ using HelpLib.Config;
 using HelpLib.Wrapper;
 using System.Net.Sockets;
 using Client.Extensions;
-using Client.Manager;
+using System.Windows.Input;
 
 namespace Client
 {
@@ -14,7 +14,6 @@ namespace Client
         private OloService service;
         private ConfigFile config;
         private UDP udp;
-        private RoomManager manager;
         private bool bridgeWork = true;
 
         public MainWindow()
@@ -27,6 +26,11 @@ namespace Client
             };
 
             exitButton.Click += (s, e) => OnClosed(e);
+            inputTextBox.KeyUp += (s, e) =>
+            {
+                if(e.Key == Key.Enter)
+                    sendButton_Click(s, e);
+            };
 
             try
             {
@@ -40,7 +44,6 @@ namespace Client
             finally
             {
                 service = new OloService(this);
-                manager = RoomManager.GetInstance();
                 udp = UDP.GetInstance(ref config);
                 Config.GlobalConfig = config;
                 UDP.OnReceive += Receive;
@@ -58,13 +61,12 @@ namespace Client
         {
             while (bridgeWork)
             {
-                for (int i = 0; i < manager.Rooms.Count; i++)
-                {
-                    var name = manager.Rooms[i];
-                    var users = manager[name];
-                    users.BraodcastNop();
-                    Thread.Sleep(100);
-                }
+                var host = Config.GlobalConfig.RemoteHost;
+                var olo = OloProtocol.GetOlo("nop", null);
+                UDP.Send(olo.ToBytes(), host);
+                UDP.Send(olo.ToBytes(), host);
+                UDP.Send(olo.ToBytes(), host);
+                Thread.Sleep(500);
             }
         }
 
@@ -78,16 +80,8 @@ namespace Client
         private void ConTo(params object[] args)
         {
             var roomName = args[0].ToString();
-            var userIP = args[1].ToString().ToIP();
-            if (!manager.IsExists(roomName) && tabControl.Exists(roomName) == null)
-            {
-                var userList = new Users();
-                userList.Add(userIP);
-                manager.Add(roomName, userList);
+            if (tabControl.Exists(roomName) == null)
                 tabControl.AddTab(roomName);
-            }
-            else
-                manager[roomName].Add(userIP);
         }
 
         [OloField(Name = "push_message")]
@@ -96,12 +90,8 @@ namespace Client
             var roomName = args[0].ToString();
             var userName = args[1].ToString();
             var message = args[2].ToString();
-            var inputIP = args[3].ToString().ToIP();
-            if (manager.IsExists(roomName) && tabControl.Exists(roomName) != null)
-            {
+            if (tabControl.Exists(roomName) != null)
                 tabControl.PushMessage(roomName, $"{userName}: {message}");
-                manager[roomName].BraodcastMessage(inputIP, roomName, userName, message);
-            }
         }
 
         [OloField(Name = "nop")]
@@ -118,10 +108,12 @@ namespace Client
 
             var tab = tabControl.GetSelectTab();
             var roomName = tab.Header.Text;
-            if (!string.IsNullOrWhiteSpace(text) && manager.IsExists(roomName))
+            text = text.TrimEnd('\n', '\r');
+            if (!string.IsNullOrWhiteSpace(text))
             {
-                manager[roomName].BraodcastMessage(roomName, Config.GlobalConfig.UserName, text);
                 tabControl.PushMessage(roomName, $"{Config.GlobalConfig.UserName}: {text}");
+                var olo = OloProtocol.GetOlo("broadcast_all_in_room", roomName, Config.GlobalConfig.UserName, text);
+                UDP.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
             }
         }
 
@@ -144,7 +136,6 @@ namespace Client
         {
             bridgeWork = false;
             Config.Save("settings.json", Config.GlobalConfig);
-            manager.Dispose();
             udp.Dispose();
         }
     }

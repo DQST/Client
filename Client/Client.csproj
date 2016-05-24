@@ -61,8 +61,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Extensions\Ext.cs" />
-    <Compile Include="Manager\Users.cs" />
-    <Compile Include="Manager\RoomManager.cs" />
     <Compile Include="RoomWindow.xaml.cs">
       <DependentUpon>RoomWindow.xaml</DependentUpon>
     </Compile>

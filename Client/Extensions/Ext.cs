@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using Client.View;
 using System.Windows.Controls;
-using Client.Manager;
 
 namespace Client.Extensions
 {
@@ -19,7 +14,8 @@ namespace Client.Extensions
 
         public static UserUITabItem Exists(this TabControl control, string name)
         {
-            foreach (UserUITabItem item in control.Items) {
+            foreach (UserUITabItem item in control.Items)
+            {
                 var tab = item.Header as UserTabItem;
                 if (tab?.Header?.Text == name)
                     return item;
@@ -29,7 +25,7 @@ namespace Client.Extensions
 
         public static void AddTab(this TabControl control, string name, bool isClosed = true)
         {
-            if(Exists(control, name) == null)
+            if (Exists(control, name) == null)
             {
                 var tab = new UserUITabItem(name, isClosed);
                 var grid = new Grid();
@@ -52,6 +48,9 @@ namespace Client.Extensions
                     if (listBox != null && listBox.Name == "msgListBox")
                     {
                         listBox.Items.Add(message);
+                        listBox.SelectedIndex = listBox.Items.Count - 1;
+                        listBox.ScrollIntoView(listBox.SelectedItem);
+                        listBox.SelectedIndex = -1;
                         return;
                     }
                 }
