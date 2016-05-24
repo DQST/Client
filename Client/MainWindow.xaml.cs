@@ -103,10 +103,11 @@ namespace Client
 
             var tab = tabControl.GetSelectTab();
             var roomName = tab.Header.Text;
-            if (!string.IsNullOrWhiteSpace(text) && manager.IsExists(roomName))
+            if (!string.IsNullOrWhiteSpace(text))
             {
-                manager[roomName].BraodcastMessage(roomName, Config.GlobalConfig.UserName, text);
                 tabControl.PushMessage(roomName, $"{Config.GlobalConfig.UserName}: {text}");
+                var olo = OloProtocol.GetOlo("broadcast_all_in_room", roomName, text);
+                UDP.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
             }
         }
 
