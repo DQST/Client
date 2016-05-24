@@ -4,6 +4,7 @@ using HelpLib.Wrapper;
 using System.Windows;
 using System.Net.Sockets;
 using System.Security.Cryptography;
+using HelpLib.Config;
 
 namespace Client
 {
@@ -90,7 +91,8 @@ namespace Client
             string name = listBox.SelectedItem as string;
             if (name != null)
             {
-                UDP.Send(OloProtocol.GetOlo("con_to", name).ToBytes(), HelpLib.Config.Config.GlobalConfig.RemoteHost);
+                var olo = OloProtocol.GetOlo("con_to", name, Config.GlobalConfig.UserName);
+                UDP.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
                 Close();
                 //var inputPass = new PassWindow();
                 //inputPass.ShowDialog();
