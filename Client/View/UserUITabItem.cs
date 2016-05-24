@@ -1,4 +1,7 @@
 ﻿using System.Windows.Controls;
+using HelpLib.Config;
+using HelpLib.Wrapper;
+using Client.Extensions;
 
 namespace Client.View
 {
@@ -11,6 +14,8 @@ namespace Client.View
             {
                 var tabControl = GetParentTabControl();
                 tabControl?.Items?.Remove(this);
+                var olo = OloProtocol.GetOlo("disconnect_from", title, Config.GlobalConfig.UserName);
+                UDP.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
             };
             Header = tab;
         }
