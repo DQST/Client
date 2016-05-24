@@ -106,7 +106,7 @@ namespace Client
             if (!string.IsNullOrWhiteSpace(text))
             {
                 tabControl.PushMessage(roomName, $"{Config.GlobalConfig.UserName}: {text}");
-                var olo = OloProtocol.GetOlo("broadcast_all_in_room", roomName, text);
+                var olo = OloProtocol.GetOlo("broadcast_all_in_room", roomName, Config.GlobalConfig.UserName, text);
                 UDP.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
             }
         }
