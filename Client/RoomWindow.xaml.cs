@@ -40,7 +40,7 @@ namespace Client
                     //var pass = input.pswAnswer.Password;
                     if (!string.IsNullOrWhiteSpace(name))
                         UDP.Send(OloProtocol.GetOlo("add_room", name).ToBytes(),
-                                HelpLib.Config.Config.GlobalConfig.RemoteHost);
+                                Config.GlobalConfig.RemoteHost);
                 }
             };
 
@@ -53,7 +53,7 @@ namespace Client
         {
             listBox.Items.Clear();
             UDP.Send(OloProtocol.GetOlo("get_rooms", null).ToBytes(),
-                HelpLib.Config.Config.GlobalConfig.RemoteHost);
+                Config.GlobalConfig.RemoteHost);
         }
 
         private string GetMD5Hash(string str)
@@ -83,7 +83,7 @@ namespace Client
         {
             string name = listBox.SelectedItem as string;
             UDP.Send(OloProtocol.GetOlo("del_room", name).ToBytes(),
-                HelpLib.Config.Config.GlobalConfig.RemoteHost);
+                Config.GlobalConfig.RemoteHost);
         }
 
         private void connect_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
