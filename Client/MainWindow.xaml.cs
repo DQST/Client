@@ -5,6 +5,7 @@ using HelpLib.Config;
 using HelpLib.Wrapper;
 using System.Net.Sockets;
 using Client.Extensions;
+using System.Windows.Input;
 
 namespace Client
 {
@@ -25,6 +26,11 @@ namespace Client
             };
 
             exitButton.Click += (s, e) => OnClosed(e);
+            inputTextBox.KeyUp += (s, e) =>
+            {
+                if(e.Key == Key.Enter)
+                    sendButton_Click(s, e);
+            };
 
             try
             {
