@@ -37,14 +37,18 @@ namespace Client
             {
                 var input = new InputDialog("Create room", "Room name:");
                 input.ShowDialog();
-                if (input.DialogResult.HasValue && input.DialogResult.Value)
-                {
-                    var name = input.txtAnswer.Text;
-                    var pass = input.pswAnswer.Password;
-                    if(!string.IsNullOrWhiteSpace(name))
-                        UDP.Send(OloProtocol.GetOlo("add_room", name, GetMD5Hash(pass)).ToBytes(),
-                                HelpLib.Config.Config.GlobalConfig.RemoteHost);
-                }
+                //if (input.DialogResult.HasValue && input.DialogResult.Value)
+                //{
+                //    var name = input.txtAnswer.Text;
+                //    var pass = input.pswAnswer.Password;
+                //    if(!string.IsNullOrWhiteSpace(name))
+                //        UDP.Send(OloProtocol.GetOlo("add_room", name, GetMD5Hash(pass)).ToBytes(),
+                //                HelpLib.Config.Config.GlobalConfig.RemoteHost);
+                //}
+                var name = input.txtAnswer.Text;
+                if (!string.IsNullOrWhiteSpace(name))
+                    UDP.Send(OloProtocol.GetOlo("add_room", name).ToBytes(),
+                            HelpLib.Config.Config.GlobalConfig.RemoteHost);
             };
 
             listBox.MouseDoubleClick += (s, e) => connect_Executed(s, null);
@@ -94,15 +98,17 @@ namespace Client
             string name = listBox.SelectedItem as string;
             if (name != null)
             {
-                var inputPass = new PassWindow();
-                inputPass.ShowDialog();
-                if (inputPass.DialogResult.HasValue && inputPass.DialogResult.Value)
-                {
-                    var pass = inputPass.pswAnswer.Password;
-                    UDP.Send(OloProtocol.GetOlo("con_to", name, GetMD5Hash(pass)).ToBytes(),
-                        HelpLib.Config.Config.GlobalConfig.RemoteHost);
-                    Close();
-                }
+                UDP.Send(OloProtocol.GetOlo("con_to", name).ToBytes(), HelpLib.Config.Config.GlobalConfig.RemoteHost);
+                Close();
+                //var inputPass = new PassWindow();
+                //inputPass.ShowDialog();
+                //if (inputPass.DialogResult.HasValue && inputPass.DialogResult.Value)
+                //{
+                //    var pass = inputPass.pswAnswer.Password;
+                //    UDP.Send(OloProtocol.GetOlo("con_to", name, GetMD5Hash(pass)).ToBytes(),
+                //        HelpLib.Config.Config.GlobalConfig.RemoteHost);
+                //    Close();
+                //}
             }
         }
     }
