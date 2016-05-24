@@ -58,13 +58,10 @@ namespace Client
         {
             while (bridgeWork)
             {
-                for (int i = 0; i < manager.Rooms.Count; i++)
-                {
-                    var name = manager.Rooms[i];
-                    var users = manager[name];
-                    users.BraodcastNop();
-                    Thread.Sleep(100);
-                }
+                var host = Config.GlobalConfig.RemoteHost;
+                var olo = OloProtocol.GetOlo("nop", null);
+                UDP.Send(olo.ToBytes(), host);
+                Thread.Sleep(100);
             }
         }
 
