@@ -37,18 +37,14 @@ namespace Client
             {
                 var input = new InputDialog("Create room", "Room name:");
                 input.ShowDialog();
-                //if (input.DialogResult.HasValue && input.DialogResult.Value)
-                //{
-                //    var name = input.txtAnswer.Text;
-                //    var pass = input.pswAnswer.Password;
-                //    if(!string.IsNullOrWhiteSpace(name))
-                //        UDP.Send(OloProtocol.GetOlo("add_room", name, GetMD5Hash(pass)).ToBytes(),
-                //                HelpLib.Config.Config.GlobalConfig.RemoteHost);
-                //}
-                var name = input.txtAnswer.Text;
-                if (!string.IsNullOrWhiteSpace(name))
-                    UDP.Send(OloProtocol.GetOlo("add_room", name).ToBytes(),
-                            HelpLib.Config.Config.GlobalConfig.RemoteHost);
+                if (input.DialogResult.HasValue && input.DialogResult.Value)
+                {
+                    var name = input.txtAnswer.Text;
+                    //var pass = input.pswAnswer.Password;
+                    if (!string.IsNullOrWhiteSpace(name))
+                        UDP.Send(OloProtocol.GetOlo("add_room", name).ToBytes(),
+                                HelpLib.Config.Config.GlobalConfig.RemoteHost);
+                }
             };
 
             listBox.MouseDoubleClick += (s, e) => connect_Executed(s, null);
@@ -83,7 +79,7 @@ namespace Client
         {
             listBox.Items.Clear();
             for (int i = 0; i < args.Length - 1; i++)
-                listBox.Items.Add(args[i]);
+                listBox.Items.Add(args[i].ToString());
         }
 
         private void delete_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
