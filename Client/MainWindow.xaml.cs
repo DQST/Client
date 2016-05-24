@@ -64,7 +64,9 @@ namespace Client
                 var host = Config.GlobalConfig.RemoteHost;
                 var olo = OloProtocol.GetOlo("nop", null);
                 UDP.Send(olo.ToBytes(), host);
-                Thread.Sleep(100);
+                UDP.Send(olo.ToBytes(), host);
+                UDP.Send(olo.ToBytes(), host);
+                Thread.Sleep(500);
             }
         }
 
