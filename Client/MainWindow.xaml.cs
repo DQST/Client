@@ -106,6 +106,7 @@ namespace Client
 
             var tab = tabControl.GetSelectTab();
             var roomName = tab.Header.Text;
+            text = text.TrimEnd('\n', '\r');
             if (!string.IsNullOrWhiteSpace(text))
             {
                 tabControl.PushMessage(roomName, $"{Config.GlobalConfig.UserName}: {text}");
