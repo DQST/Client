@@ -23,6 +23,9 @@ namespace Client
             UDP.OnReceive += UDP_OnReceive;
 
             updateButton.Click += UpdateButton_Click;
+            createButton.Click += CreateButton_Click;
+            createRoomButton.Click += CreateButton_Click;
+            listBox.MouseDoubleClick += (s, e) => connect_Executed(s, null);
 
             Closed += (s, e) =>
             {
@@ -30,23 +33,21 @@ namespace Client
                 Close();
             };
 
-            createButton.Click += (s, e) =>
-            {
-                var input = new InputDialog("Create room", "Room name:");
-                input.ShowDialog();
-                if (input.DialogResult.HasValue && input.DialogResult.Value)
-                {
-                    var name = input.txtAnswer.Text;
-                    //var pass = input.pswAnswer.Password;
-                    if (!string.IsNullOrWhiteSpace(name))
-                        UDP.Send(OloProtocol.GetOlo("add_room", name).ToBytes(),
-                                Config.GlobalConfig.RemoteHost);
-                }
-            };
-
-            listBox.MouseDoubleClick += (s, e) => connect_Executed(s, null);
-
             UpdateButton_Click(this, null);
+        }
+
+        private void CreateButton_Click(object sender, RoutedEventArgs e)
+        {
+            var input = new InputDialog("Create room", "Room name:");
+            input.ShowDialog();
+            if (input.DialogResult.HasValue && input.DialogResult.Value)
+            {
+                var name = input.txtAnswer.Text;
+                //var pass = input.pswAnswer.Password;
+                if (!string.IsNullOrWhiteSpace(name))
+                    UDP.Send(OloProtocol.GetOlo("add_room", name).ToBytes(),
+                            Config.GlobalConfig.RemoteHost);
+            }
         }
 
         private void UpdateButton_Click(object sender, RoutedEventArgs e)
