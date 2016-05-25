@@ -44,7 +44,10 @@ namespace Client
             finally
             {
                 if (Properties.Settings.Default.UniqueKey == string.Empty)
+                {
                     Properties.Settings.Default.UniqueKey = Config.GetUniqueKey();
+                    Properties.Settings.Default.Save();
+                }
 
                 service = new OloService(this);
                 udp = UDP.GetInstance(ref config);
