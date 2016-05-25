@@ -3,7 +3,6 @@ using Client.View;
 using HelpLib.Wrapper;
 using System.Windows;
 using System.Net.Sockets;
-using System.Security.Cryptography;
 using HelpLib.Config;
 
 namespace Client
@@ -43,10 +42,12 @@ namespace Client
             if (input.DialogResult.HasValue && input.DialogResult.Value)
             {
                 var name = input.txtAnswer.Text;
-                //var pass = input.pswAnswer.Password;
+                var pass = input.pswAnswer.Password;
                 if (!string.IsNullOrWhiteSpace(name))
-                    UDP.Send(OloProtocol.GetOlo("add_room", name).ToBytes(),
-                            Config.GlobalConfig.RemoteHost);
+                {
+                    var olo = OloProtocol.GetOlo("add_room", name, Config.GlobalConfig.UserName, pass);
+                    UDP.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
+                }
             }
         }
 
@@ -55,15 +56,6 @@ namespace Client
             listBox.Items.Clear();
             UDP.Send(OloProtocol.GetOlo("get_rooms", null).ToBytes(),
                 Config.GlobalConfig.RemoteHost);
-        }
-
-        private string GetMD5Hash(string str)
-        {
-            using (MD5 md5 = MD5.Create())
-            {
-                var bytes = md5.ComputeHash(str.ToBytes());
-                return bytes.ToStr();
-            }
         }
 
         private void UDP_OnReceive(object sender, UdpReceiveResult e)
@@ -83,8 +75,18 @@ namespace Client
         private void delete_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
         {
             string name = listBox.SelectedItem as string;
-            UDP.Send(OloProtocol.GetOlo("del_room", name).ToBytes(),
-                Config.GlobalConfig.RemoteHost);
+            if (name != null)
+            {
+                var inputPass = new PassWindow();
+                inputPass.ShowDialog();
+                if (inputPass.DialogResult.HasValue && inputPass.DialogResult.Value)
+                {
+                    var pass = inputPass.pswAnswer.Password;
+                    var olo = OloProtocol.GetOlo("del_room", name, Config.GlobalConfig.UserName, pass);
+                    UDP.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
+                    Close();
+                }
+            }
         }
 
         private void connect_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
@@ -92,18 +94,15 @@ namespace Client
             string name = listBox.SelectedItem as string;
             if (name != null)
             {
-                var olo = OloProtocol.GetOlo("con_to", name, Config.GlobalConfig.UserName);
-                UDP.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
-                Close();
-                //var inputPass = new PassWindow();
-                //inputPass.ShowDialog();
-                //if (inputPass.DialogResult.HasValue && inputPass.DialogResult.Value)
-                //{
-                //    var pass = inputPass.pswAnswer.Password;
-                //    UDP.Send(OloProtocol.GetOlo("con_to", name, GetMD5Hash(pass)).ToBytes(),
-                //        HelpLib.Config.Config.GlobalConfig.RemoteHost);
-                //    Close();
-                //}
+                var inputPass = new PassWindow();
+                inputPass.ShowDialog();
+                if (inputPass.DialogResult.HasValue && inputPass.DialogResult.Value)
+                {
+                    var pass = inputPass.pswAnswer.Password;
+                    var olo = OloProtocol.GetOlo("con_to", name, Config.GlobalConfig.UserName, pass);
+                    UDP.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
+                    Close();
+                }
             }
         }
     }
