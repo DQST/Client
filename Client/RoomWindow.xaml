@@ -16,34 +16,66 @@
     </Window.CommandBindings>
     <Grid>
         <StackPanel Background="#F1F2F4">
-            <Button x:Name="updateButton" 
+            <DockPanel>
+                <Button x:Name="createRoomButton" 
                     Width="30"
                     Height="30"
-                    HorizontalAlignment="Right"
-                    ToolTip="Update button">
-                <Button.Template>
-                    <ControlTemplate>
-                        <Grid>
-                            <Rectangle x:Name="buttonSurface" 
+                    DockPanel.Dock="Left"
+                    ToolTip="Create room">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Grid>
+                                <Rectangle x:Name="buttonSurface" 
                                        Fill="{x:Null}"
                                        StrokeThickness="0"
                                        Stroke="#FF919191"/>
-                            <TextBlock x:Name="contentSurface" 
+                                <TextBlock x:Name="contentSurface" 
+                                       Text="&#10010;"  
+                                       Foreground="Black"
+                                       TextAlignment="Center" 
+                                       FontWeight="Normal" 
+                                       VerticalAlignment="Center"
+                                       FontSize="18"/>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="buttonSurface" Property="Fill" Value="#FF7BCB73"></Setter>
+                                    <Setter TargetName="contentSurface" Property="Foreground" Value="White"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button x:Name="updateButton" 
+                    Width="30"
+                    Height="30"
+                    DockPanel.Dock="Right" 
+                    HorizontalAlignment="Right" 
+                    ToolTip="Update button">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Grid>
+                                <Rectangle x:Name="buttonSurface" 
+                                       Fill="{x:Null}"
+                                       StrokeThickness="0"
+                                       Stroke="#FF919191"/>
+                                <TextBlock x:Name="contentSurface" 
                                        Text="&#10227;"  
                                        Foreground="Black"
                                        TextAlignment="Center" 
                                        FontWeight="Normal" 
                                        FontSize="20"/>
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="buttonSurface" Property="Fill" Value="#FF7CC5C5"></Setter>
-                                <Setter TargetName="contentSurface" Property="Foreground" Value="White"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Button.Template>
-            </Button>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="buttonSurface" Property="Fill" Value="#FF7CC5C5"></Setter>
+                                    <Setter TargetName="contentSurface" Property="Foreground" Value="White"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </DockPanel>
             <ListBox x:Name="listBox" 
                      Height="250" 
                      Width="300" 
