@@ -45,7 +45,7 @@ namespace Client
                 var pass = input.pswAnswer.Password;
                 if (!string.IsNullOrWhiteSpace(name))
                 {
-                    var olo = OloProtocol.GetOlo("add_room", name, Config.GlobalConfig.UserName, pass);
+                    var olo = OloProtocol.GetOlo("add_room", name, Properties.Settings.Default.UniqueKey, pass);
                     UDP.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
                 }
             }
@@ -82,7 +82,7 @@ namespace Client
                 if (inputPass.DialogResult.HasValue && inputPass.DialogResult.Value)
                 {
                     var pass = inputPass.pswAnswer.Password;
-                    var olo = OloProtocol.GetOlo("del_room", name, Config.GlobalConfig.UserName, pass);
+                    var olo = OloProtocol.GetOlo("del_room", name, Properties.Settings.Default.UniqueKey, pass);
                     UDP.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
                     Close();
                 }
