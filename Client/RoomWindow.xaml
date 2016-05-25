@@ -30,7 +30,7 @@
                                        StrokeThickness="0"
                                        Stroke="#FF919191"/>
                                 <TextBlock x:Name="contentSurface" 
-                                       Text="&#10010;"  
+                                       Text="&#10133;"  
                                        Foreground="Black"
                                        TextAlignment="Center" 
                                        FontWeight="Normal" 
