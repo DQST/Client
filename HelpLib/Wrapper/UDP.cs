@@ -43,10 +43,10 @@ namespace HelpLib.Wrapper
 
         private static int GetRandomPort()
         {
-            for (int i = 14800; i < IPEndPoint.MaxPort; i++)
+            for (int i = 49152; i <= IPEndPoint.MaxPort; i++)
                 if (PortInUse(i) == false)
                     return i;
-            return IPEndPoint.MinPort;
+            return 49152;
         }
 
         public static UDP GetInstance(ref ConfigFile config)
