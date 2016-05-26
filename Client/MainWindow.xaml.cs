@@ -98,12 +98,6 @@ namespace Client
                 tabControl.PushMessage(roomName, $"{userName}: {message}");
         }
 
-        [OloField(Name = "nop")]
-        private void NopMsg(params object[] args)
-        {
-
-        }
-
         private void sendButton_Click(object sender, RoutedEventArgs e)
         {
             var text = inputTextBox.Text;
