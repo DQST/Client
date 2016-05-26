@@ -67,3 +67,5 @@ D:\Диплом\Client_v0.1\Client\obj\Debug\RoomWindow.g.cs
 D:\Диплом\Client_v0.1\Client\obj\Debug\RoomWindow.baml
 D:\Диплом\Client_v0.1\Client\obj\Debug\View\PassWindow.g.cs
 D:\Диплом\Client_v0.1\Client\obj\Debug\View\PassWindow.baml
+D:\Диплом\Client_v0.1\Client\obj\Debug\View\DownloadButton.g.cs
+D:\Диплом\Client_v0.1\Client\obj\Debug\View\DownloadButton.baml
