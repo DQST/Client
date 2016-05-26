@@ -19,6 +19,7 @@
         <Menu VerticalAlignment="Top" Grid.Column="0" Grid.Row="0" Margin="-3,0,-3,0">
             <MenuItem Header="File">
                 <MenuItem Name="roomsButton" Header="Rooms" Click="roomsButton_Click"/>
+                <MenuItem Name="sendFile" Header="Send file..." Click="sendFile_Click"/>
                 <Separator/>
                 <MenuItem Name="exitButton" Header="Exit"/>
             </MenuItem>
