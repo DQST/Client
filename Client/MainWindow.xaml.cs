@@ -7,8 +7,6 @@ using System.Net.Sockets;
 using Client.Extensions;
 using System.Windows.Input;
 using Microsoft.Win32;
-using System.IO;
-using System.Security.Cryptography;
 
 namespace Client
 {
@@ -57,11 +55,7 @@ namespace Client
                 Config.GlobalConfig = config;
                 Network.OnReceive += Receive;
                 udp.Run();
-
-                tabControl.AddTab("Debug", false);
-                tabControl.PushMessage("Debug", $"local ip: {config.LocalHost.ToString()}");
-                tabControl.PushMessage("Debug", new View.DownloadButton("file.txt"));
-
+                
                 ThreadPool.QueueUserWorkItem(Bridge);
                 Title = $"{Title} @ {config.UserName}";
             }
