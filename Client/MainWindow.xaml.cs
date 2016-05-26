@@ -168,9 +168,7 @@ namespace Client
                 if (tab != null)
                 {
                     tabControl.PushMessage(tab.Header.Text, $"{Config.GlobalConfig.UserName}: sending file \"{fileDialog.SafeFileName}\"");
-                    Network.SendFile(filePath, Config.GlobalConfig.RemoteHost);
-                    var olo = OloProtocol.GetOlo("file_load", tab.Header.Text, Config.GlobalConfig.UserName, fileDialog.SafeFileName);
-                    Network.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
+                    Network.SendFile(filePath, tab.Header.Text, Config.GlobalConfig.RemoteHost);
                 }
             }
         }
