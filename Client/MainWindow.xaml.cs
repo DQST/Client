@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using Client.Extensions;
 using System.Windows.Input;
 using Microsoft.Win32;
+using Client.View;
 
 namespace Client
 {
@@ -96,6 +97,23 @@ namespace Client
             var message = args[2].ToString();
             if (tabControl.Exists(roomName) != null)
                 tabControl.PushMessage(roomName, $"{userName}: {message}");
+        }
+
+        [OloField(Name = "push_file")]
+        private void PushFile(params object[] args)
+        {
+            var roomName = args[0].ToString();
+            var userName = args[1].ToString();
+            var fileName = args[2].ToString();
+            if (tabControl.Exists(roomName) != null)
+            {
+                var button = new DownloadButton(fileName);
+                button.downloadButton.Click += (s, e) => {
+                    var olo = OloProtocol.GetOlo("load_file", fileName);
+                    Network.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
+                };
+                tabControl.PushMessage(roomName, $"{userName}: {button}");
+            }
         }
 
         private void sendButton_Click(object sender, RoutedEventArgs e)
