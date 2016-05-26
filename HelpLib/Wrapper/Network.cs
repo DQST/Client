@@ -32,7 +32,7 @@ namespace HelpLib.Wrapper
 
             foreach (var item in ipEndPoints)
             {
-                if(item.Port == port)
+                if (item.Port == port)
                 {
                     inUse = true;
                     break;
@@ -77,7 +77,7 @@ namespace HelpLib.Wrapper
             {
                 FileInfo info = new FileInfo(filePath);
                 var fileName = info.Name;
-                
+
                 TcpClient tcp = null;
                 NetworkStream stream = null;
 
