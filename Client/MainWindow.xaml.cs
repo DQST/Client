@@ -157,49 +157,7 @@ namespace Client
             if (fileDialog.ShowDialog() == true)
             {
                 var filePath = fileDialog.FileName;
-                ThreadPool.QueueUserWorkItem(SendFileBridge, filePath);
-            }
-        }
-
-        private void SendFileBridge(object obj)
-        {
-            var filePath = obj as string;
-            if (filePath != null && File.Exists(filePath))
-            {
-                FileInfo info = new FileInfo(filePath);
-                var fileName = info.Name;
-
-                Network.Send(OloProtocol.GetOlo("create_file", fileName).ToBytes(), Config.GlobalConfig.RemoteHost);
-
-                TcpClient tcp = null;
-                NetworkStream stream = null;
-
-                try
-                {
-                    tcp = new TcpClient();
-                    tcp.Connect(Config.GlobalConfig.RemoteHost);
-                    stream = tcp.GetStream();
-                }
-                catch (SocketException e)
-                {
-                    MessageBox.Show(e.Message);
-                }
-                finally
-                {
-                    var buffer = new byte[1028];
-                    buffer[0] = 0;
-                    buffer[1] = 0;
-                    buffer[2] = 0;
-                    buffer[3] = 1;
-                    var file = new FileStream(filePath, FileMode.Open);
-                    while (file.Read(buffer, 4, buffer.Length - 4) > 0)
-                        stream.Write(buffer, 0, buffer.Length);
-                    buffer = $"0002:{info.Name}".ToBytes();
-                    stream.Write(buffer, 0, buffer.Length);
-                    file.Close();
-                    stream.Close();
-                    tcp.Close();
-                }
+                Network.SendFile(filePath, Config.GlobalConfig.RemoteHost);
             }
         }
     }

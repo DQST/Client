@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Text;
-using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 using HelpLib.Config;
-using HelpLib.Wrapper;
 using System.Net.NetworkInformation;
+using System.Threading;
+using System.IO;
+using System.Windows;
 
 namespace HelpLib.Wrapper
 {
@@ -62,6 +63,51 @@ namespace HelpLib.Wrapper
         {
             var r = client.Send(data, data.Length, endPoint);
             return r;
+        }
+
+        public static void SendFile(string path, IPEndPoint endPoint)
+        {
+            ThreadPool.QueueUserWorkItem(SendFileBridge, path);
+        }
+
+        private static void SendFileBridge(object obj)
+        {
+            var filePath = obj as string;
+            if (filePath != null && File.Exists(filePath))
+            {
+                FileInfo info = new FileInfo(filePath);
+                var fileName = info.Name;
+                
+                TcpClient tcp = null;
+                NetworkStream stream = null;
+
+                try
+                {
+                    tcp = new TcpClient();
+                    tcp.Connect(Config.Config.GlobalConfig.RemoteHost);
+                    stream = tcp.GetStream();
+                }
+                catch (SocketException e)
+                {
+                    MessageBox.Show(e.Message);
+                }
+                finally
+                {
+                    var buffer = new byte[1028];
+                    buffer[0] = 0;
+                    buffer[1] = 0;
+                    buffer[2] = 0;
+                    buffer[3] = 1;
+                    var file = new FileStream(filePath, FileMode.Open);
+                    while (file.Read(buffer, 4, buffer.Length - 4) > 0)
+                        stream.Write(buffer, 0, buffer.Length);
+                    buffer = Encoding.UTF8.GetBytes($"0002:{info.Name}");
+                    stream.Write(buffer, 0, buffer.Length);
+                    file.Close();
+                    stream.Close();
+                    tcp.Close();
+                }
+            }
         }
 
         public async void Run()
