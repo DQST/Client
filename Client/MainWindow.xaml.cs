@@ -55,7 +55,7 @@ namespace Client
                 Config.GlobalConfig = config;
                 Network.OnReceive += Receive;
                 udp.Run();
-                
+
                 ThreadPool.QueueUserWorkItem(Bridge);
                 Title = $"{Title} @ {config.UserName}";
             }
