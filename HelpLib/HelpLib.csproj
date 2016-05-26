@@ -49,7 +49,7 @@
     <Compile Include="Config\Config.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Wrapper\OloProtocol.cs" />
-    <Compile Include="Wrapper\UDP.cs" />
+    <Compile Include="Wrapper\Network.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
