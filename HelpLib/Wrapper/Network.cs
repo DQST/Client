@@ -66,10 +66,17 @@ namespace HelpLib.Wrapper
             return r;
         }
 
-        public static async void SendFile(string path, IPEndPoint endPoint)
+        public static void SendFile(string path, string inRoom, IPEndPoint endPoint)
+        {
+            ThreadPool.QueueUserWorkItem(FileBridge, new string[] {path, inRoom });
+        }
+
+        private static void FileBridge(object o)
         {
             long parts = 0;
-
+            var arr = o as string[];
+            var path = arr[0];
+            var room = arr[1];
             if (path != null && File.Exists(path))
             {
                 const int bufferSize = 1028;
@@ -107,12 +114,15 @@ namespace HelpLib.Wrapper
                     {
                         while (file.Read(buffer, 4, buffer.Length - 4) > 0)
                         {
-                            await stream.WriteAsync(buffer, 0, buffer.Length);
+                            stream.Write(buffer, 0, buffer.Length);
                             if (parts < counts)
                                 ++parts;
                         }
                         buffer = Encoding.UTF8.GetBytes($"0002:{info.Name}");
                         stream.Write(buffer, 0, buffer.Length);
+                        var olo = OloProtocol.GetOlo("file_load", room, Config.Config.GlobalConfig.UserName, fileName);
+                        var data = Encoding.UTF8.GetBytes(olo);
+                        Send(data, Config.Config.GlobalConfig.RemoteHost);
                     }
                     stream.Close();
                     tcp.Close();
