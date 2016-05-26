@@ -6,6 +6,9 @@ using HelpLib.Wrapper;
 using System.Net.Sockets;
 using Client.Extensions;
 using System.Windows.Input;
+using Microsoft.Win32;
+using System.IO;
+using System.Security.Cryptography;
 
 namespace Client
 {
@@ -28,7 +31,7 @@ namespace Client
             exitButton.Click += (s, e) => OnClosed(e);
             inputTextBox.KeyUp += (s, e) =>
             {
-                if(e.Key == Key.Enter)
+                if (e.Key == Key.Enter)
                     sendButton_Click(s, e);
             };
 
@@ -57,6 +60,7 @@ namespace Client
 
                 tabControl.AddTab("Debug", false);
                 tabControl.PushMessage("Debug", $"local ip: {config.LocalHost.ToString()}");
+                tabControl.PushMessage("Debug", new View.DownloadButton("file.txt"));
 
                 ThreadPool.QueueUserWorkItem(Bridge);
                 Title = $"{Title} @ {config.UserName}";
@@ -103,7 +107,7 @@ namespace Client
         [OloField(Name = "nop")]
         private void NopMsg(params object[] args)
         {
-            
+
         }
 
         private void sendButton_Click(object sender, RoutedEventArgs e)
@@ -143,6 +147,60 @@ namespace Client
             bridgeWork = false;
             Config.Save("settings.json", Config.GlobalConfig);
             udp.Dispose();
+        }
+
+        private void sendFile_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            fileDialog.Filter = "Text files (*.txt)|*.txt|Image files (*.png, *.jpeg, *.bmp)|*.png;*.jpeg;*.bmp|All files (*.*)|*.*";
+            fileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            if (fileDialog.ShowDialog() == true)
+            {
+                var filePath = fileDialog.FileName;
+                ThreadPool.QueueUserWorkItem(SendFileBridge, filePath);
+            }
+        }
+
+        private void SendFileBridge(object obj)
+        {
+            var filePath = obj as string;
+            if (filePath != null && File.Exists(filePath))
+            {
+                FileInfo info = new FileInfo(filePath);
+                var fileName = info.Name;
+
+                UDP.Send(OloProtocol.GetOlo("create_file", fileName).ToBytes(), Config.GlobalConfig.RemoteHost);
+
+                TcpClient tcp = null;
+                NetworkStream stream = null;
+
+                try
+                {
+                    tcp = new TcpClient();
+                    tcp.Connect(Config.GlobalConfig.RemoteHost);
+                    stream = tcp.GetStream();
+                }
+                catch (SocketException e)
+                {
+                    MessageBox.Show(e.Message);
+                }
+                finally
+                {
+                    var buffer = new byte[1028];
+                    buffer[0] = 0;
+                    buffer[1] = 0;
+                    buffer[2] = 0;
+                    buffer[3] = 1;
+                    var file = new FileStream(filePath, FileMode.Open);
+                    while (file.Read(buffer, 4, buffer.Length - 4) > 0)
+                        stream.Write(buffer, 0, buffer.Length);
+                    buffer = $"0002:{info.Name}".ToBytes();
+                    stream.Write(buffer, 0, buffer.Length);
+                    file.Close();
+                    stream.Close();
+                    tcp.Close();
+                }
+            }
         }
     }
 }
