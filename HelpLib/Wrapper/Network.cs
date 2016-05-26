@@ -9,16 +9,16 @@ using System.Net.NetworkInformation;
 
 namespace HelpLib.Wrapper
 {
-    public class UDP : IDisposable
+    public class Network : IDisposable
     {
-        private static UDP instance;
+        private static Network instance;
         private static UdpClient client;
         private static bool work;
 
         public static bool IsWork { get { return work; } }
         public static event EventHandler<UdpReceiveResult> OnReceive;
 
-        private UDP()
+        private Network()
         {
             instance = this;
         }
@@ -49,13 +49,13 @@ namespace HelpLib.Wrapper
             return 49152;
         }
 
-        public static UDP GetInstance(ref ConfigFile config)
+        public static Network GetInstance(ref ConfigFile config)
         {
             if (PortInUse(config.LocalHost.Port) == true)
                 config.LocalHost.Port = GetRandomPort();
             client = new UdpClient(config.LocalHost.Port, AddressFamily.InterNetwork);
             work = true;
-            return instance ?? new UDP();
+            return instance ?? new Network();
         }
 
         public static int Send(byte[] data, IPEndPoint endPoint)
