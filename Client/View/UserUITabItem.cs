@@ -15,7 +15,7 @@ namespace Client.View
                 var tabControl = GetParentTabControl();
                 tabControl?.Items?.Remove(this);
                 var olo = OloProtocol.GetOlo("disconnect_from", title, Config.GlobalConfig.UserName);
-                UDP.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
+                Network.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
             };
             Header = tab;
         }

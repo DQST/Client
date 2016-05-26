@@ -19,7 +19,7 @@ namespace Client
             InitializeComponent();
             service = new OloService(this);
 
-            UDP.OnReceive += UDP_OnReceive;
+            Network.OnReceive += UDP_OnReceive;
 
             updateButton.Click += UpdateButton_Click;
             createButton.Click += CreateButton_Click;
@@ -28,7 +28,7 @@ namespace Client
 
             Closed += (s, e) =>
             {
-                UDP.OnReceive -= UDP_OnReceive;
+                Network.OnReceive -= UDP_OnReceive;
                 Close();
             };
 
@@ -46,7 +46,7 @@ namespace Client
                 if (!string.IsNullOrWhiteSpace(name))
                 {
                     var olo = OloProtocol.GetOlo("add_room", name, Properties.Settings.Default.UniqueKey, pass);
-                    UDP.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
+                    Network.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
                 }
             }
         }
@@ -54,7 +54,7 @@ namespace Client
         private void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
             listBox.Items.Clear();
-            UDP.Send(OloProtocol.GetOlo("get_rooms", null).ToBytes(),
+            Network.Send(OloProtocol.GetOlo("get_rooms", null).ToBytes(),
                 Config.GlobalConfig.RemoteHost);
         }
 
@@ -83,7 +83,7 @@ namespace Client
                 {
                     var pass = inputPass.pswAnswer.Password;
                     var olo = OloProtocol.GetOlo("del_room", name, Properties.Settings.Default.UniqueKey, pass);
-                    UDP.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
+                    Network.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
                     Close();
                 }
             }
@@ -100,7 +100,7 @@ namespace Client
                 {
                     var pass = inputPass.pswAnswer.Password;
                     var olo = OloProtocol.GetOlo("con_to", name, Config.GlobalConfig.UserName, pass);
-                    UDP.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
+                    Network.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
                     Close();
                 }
             }

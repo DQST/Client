@@ -16,7 +16,7 @@ namespace Client
     {
         private OloService service;
         private ConfigFile config;
-        private UDP udp;
+        private Network udp;
         private bool bridgeWork = true;
 
         public MainWindow()
@@ -53,9 +53,9 @@ namespace Client
                 }
 
                 service = new OloService(this);
-                udp = UDP.GetInstance(ref config);
+                udp = Network.GetInstance(ref config);
                 Config.GlobalConfig = config;
-                UDP.OnReceive += Receive;
+                Network.OnReceive += Receive;
                 udp.Run();
 
                 tabControl.AddTab("Debug", false);
@@ -73,9 +73,9 @@ namespace Client
             {
                 var host = Config.GlobalConfig.RemoteHost;
                 var olo = OloProtocol.GetOlo("nop", null);
-                UDP.Send(olo.ToBytes(), host);
-                UDP.Send(olo.ToBytes(), host);
-                UDP.Send(olo.ToBytes(), host);
+                Network.Send(olo.ToBytes(), host);
+                Network.Send(olo.ToBytes(), host);
+                Network.Send(olo.ToBytes(), host);
                 Thread.Sleep(500);
             }
         }
@@ -123,7 +123,7 @@ namespace Client
             {
                 tabControl.PushMessage(roomName, $"{Config.GlobalConfig.UserName}: {text}");
                 var olo = OloProtocol.GetOlo("broadcast_all_in_room", roomName, Config.GlobalConfig.UserName, text);
-                UDP.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
+                Network.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
             }
         }
 
@@ -169,7 +169,7 @@ namespace Client
                 FileInfo info = new FileInfo(filePath);
                 var fileName = info.Name;
 
-                UDP.Send(OloProtocol.GetOlo("create_file", fileName).ToBytes(), Config.GlobalConfig.RemoteHost);
+                Network.Send(OloProtocol.GetOlo("create_file", fileName).ToBytes(), Config.GlobalConfig.RemoteHost);
 
                 TcpClient tcp = null;
                 NetworkStream stream = null;
