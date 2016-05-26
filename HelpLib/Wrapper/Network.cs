@@ -7,6 +7,7 @@ using System.Net.NetworkInformation;
 using System.Threading;
 using System.IO;
 using System.Windows;
+using System.Threading.Tasks;
 
 namespace HelpLib.Wrapper
 {
@@ -65,18 +66,22 @@ namespace HelpLib.Wrapper
             return r;
         }
 
-        public static void SendFile(string path, IPEndPoint endPoint)
+        public static async void SendFile(string path, IPEndPoint endPoint)
         {
-            ThreadPool.QueueUserWorkItem(SendFileBridge, path);
-        }
+            long parts = 0;
 
-        private static void SendFileBridge(object obj)
-        {
-            var filePath = obj as string;
-            if (filePath != null && File.Exists(filePath))
+            if (path != null && File.Exists(path))
             {
-                FileInfo info = new FileInfo(filePath);
+                const int bufferSize = 1028;
+                FileInfo info = new FileInfo(path);
                 var fileName = info.Name;
+                var fileSize = info.Length;
+                long counts;
+
+                if (fileSize <= bufferSize)
+                    counts = 1;
+                else
+                    counts = (long)Math.Floor(fileSize / (double)bufferSize);
 
                 TcpClient tcp = null;
                 NetworkStream stream = null;
@@ -93,17 +98,22 @@ namespace HelpLib.Wrapper
                 }
                 finally
                 {
-                    var buffer = new byte[1028];
+                    var buffer = new byte[bufferSize];
                     buffer[0] = 0;
                     buffer[1] = 0;
                     buffer[2] = 0;
                     buffer[3] = 1;
-                    var file = new FileStream(filePath, FileMode.Open);
-                    while (file.Read(buffer, 4, buffer.Length - 4) > 0)
+                    using (FileStream file = new FileStream(path, FileMode.Open))
+                    {
+                        while (file.Read(buffer, 4, buffer.Length - 4) > 0)
+                        {
+                            await stream.WriteAsync(buffer, 0, buffer.Length);
+                            if (parts < counts)
+                                ++parts;
+                        }
+                        buffer = Encoding.UTF8.GetBytes($"0002:{info.Name}");
                         stream.Write(buffer, 0, buffer.Length);
-                    buffer = Encoding.UTF8.GetBytes($"0002:{info.Name}");
-                    stream.Write(buffer, 0, buffer.Length);
-                    file.Close();
+                    }
                     stream.Close();
                     tcp.Close();
                 }

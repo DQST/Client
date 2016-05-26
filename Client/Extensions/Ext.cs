@@ -8,8 +8,10 @@ namespace Client.Extensions
     {
         public static UserTabItem GetSelectTab(this TabControl control)
         {
-            var tab = control.Items[control.SelectedIndex] as UserUITabItem;
-            return tab.Header as UserTabItem;
+            UserUITabItem tab = null;
+            if (control.Items.Count > 0)
+                tab = control.Items[control.SelectedIndex] as UserUITabItem;
+            return tab?.Header as UserTabItem;
         }
 
         public static UserUITabItem Exists(this TabControl control, string name)

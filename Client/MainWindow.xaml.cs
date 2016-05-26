@@ -8,6 +8,7 @@ using Client.Extensions;
 using System.Windows.Input;
 using Microsoft.Win32;
 using Client.View;
+using System.Windows.Controls;
 
 namespace Client
 {
@@ -108,11 +109,8 @@ namespace Client
             if (tabControl.Exists(roomName) != null)
             {
                 var button = new DownloadButton(fileName);
-                button.downloadButton.Click += (s, e) => {
-                    var olo = OloProtocol.GetOlo("load_file", fileName);
-                    Network.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
-                };
-                tabControl.PushMessage(roomName, $"{userName}: {button}");
+                tabControl.PushMessage(roomName, $"{userName}:");
+                tabControl.PushMessage(roomName, button);
             }
         }
 
@@ -123,13 +121,16 @@ namespace Client
             inputTextBox.Clear();
 
             var tab = tabControl.GetSelectTab();
-            var roomName = tab.Header.Text;
-            text = text.TrimEnd('\n', '\r');
-            if (!string.IsNullOrWhiteSpace(text))
+            if (tab != null)
             {
-                tabControl.PushMessage(roomName, $"{Config.GlobalConfig.UserName}: {text}");
-                var olo = OloProtocol.GetOlo("broadcast_all_in_room", roomName, Config.GlobalConfig.UserName, text);
-                Network.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
+                var roomName = tab.Header.Text;
+                text = text.TrimEnd('\n', '\r');
+                if (!string.IsNullOrWhiteSpace(text))
+                {
+                    tabControl.PushMessage(roomName, $"{Config.GlobalConfig.UserName}: {text}");
+                    var olo = OloProtocol.GetOlo("broadcast_all_in_room", roomName, Config.GlobalConfig.UserName, text);
+                    Network.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
+                }
             }
         }
 
@@ -163,7 +164,14 @@ namespace Client
             if (fileDialog.ShowDialog() == true)
             {
                 var filePath = fileDialog.FileName;
-                Network.SendFile(filePath, Config.GlobalConfig.RemoteHost);
+                var tab = tabControl.GetSelectTab();
+                if (tab != null)
+                {
+                    tabControl.PushMessage(tab.Header.Text, $"{Config.GlobalConfig.UserName}: sending file \"{fileDialog.SafeFileName}\"");
+                    Network.SendFile(filePath, Config.GlobalConfig.RemoteHost);
+                    var olo = OloProtocol.GetOlo("file_load", tab.Header.Text, Config.GlobalConfig.UserName, fileDialog.SafeFileName);
+                    Network.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
+                }
             }
         }
     }
