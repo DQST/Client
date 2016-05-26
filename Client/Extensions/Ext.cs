@@ -36,7 +36,7 @@ namespace Client.Extensions
             }
         }
 
-        public static void PushMessage(this TabControl control, string name, string message)
+        public static void PushMessage(this TabControl control, string name, object obj)
         {
             var rez = control.Exists(name);
             if (rez != null)
@@ -47,7 +47,7 @@ namespace Client.Extensions
                     var listBox = i as ListBox;
                     if (listBox != null && listBox.Name == "msgListBox")
                     {
-                        listBox.Items.Add(message);
+                        listBox.Items.Add(obj);
                         listBox.SelectedIndex = listBox.Items.Count - 1;
                         listBox.ScrollIntoView(listBox.SelectedItem);
                         listBox.SelectedIndex = -1;
