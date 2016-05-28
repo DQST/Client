@@ -48,3 +48,7 @@ d:\Диплом\Client_v0.1\Client\obj\Release\View\UserTabItem.baml
 d:\Диплом\Client_v0.1\Client\obj\Release\Client.g.resources
 d:\Диплом\Client_v0.1\Client\obj\Release\Client.Properties.Resources.resources
 d:\Диплом\Client_v0.1\Client\obj\Release\Client.csproj.GenerateResource.Cache
+D:\Диплом\Client_v0.1\Client\obj\Release\View\DownloadButton.g.cs
+D:\Диплом\Client_v0.1\Client\obj\Release\View\DownloadButton.baml
+D:\Диплом\Client_v0.1\Client\obj\Release\View\MProgressBar.g.cs
+D:\Диплом\Client_v0.1\Client\obj\Release\View\MProgressBar.baml

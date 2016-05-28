@@ -34,5 +34,17 @@ namespace Client.Properties {
                 this["UniqueKey"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string FileFolder {
+            get {
+                return ((string)(this["FileFolder"]));
+            }
+            set {
+                this["FileFolder"] = value;
+            }
+        }
     }
 }
