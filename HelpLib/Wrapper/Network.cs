@@ -4,18 +4,17 @@ using System.Net;
 using System.Net.Sockets;
 using HelpLib.Config;
 using System.Net.NetworkInformation;
-using System.Threading;
 using System.IO;
 using System.Windows;
-using System.Threading.Tasks;
 
 namespace HelpLib.Wrapper
 {
     public class Network : IDisposable
     {
         private static Network instance;
-        private static UdpClient client;
+        private static UdpClient udpClient;
         private static bool work;
+        private static int i = 0;
 
         public static bool IsWork { get { return work; } }
         public static event EventHandler<UdpReceiveResult> OnReceive;
@@ -29,7 +28,7 @@ namespace HelpLib.Wrapper
         {
             bool inUse = false;
             var ipProperties = IPGlobalProperties.GetIPGlobalProperties();
-            var ipEndPoints = ipProperties.GetActiveUdpListeners();
+            var ipEndPoints = ipProperties.GetActiveTcpListeners();
 
             foreach (var item in ipEndPoints)
             {
@@ -43,7 +42,7 @@ namespace HelpLib.Wrapper
             return inUse;
         }
 
-        private static int GetRandomPort()
+        private static int GetEmptyPort()
         {
             for (int i = 49152; i <= IPEndPoint.MaxPort; i++)
                 if (PortInUse(i) == false)
@@ -54,29 +53,63 @@ namespace HelpLib.Wrapper
         public static Network GetInstance(ref ConfigFile config)
         {
             if (PortInUse(config.LocalHost.Port) == true)
-                config.LocalHost.Port = GetRandomPort();
-            client = new UdpClient(config.LocalHost.Port, AddressFamily.InterNetwork);
+                config.LocalHost.Port = GetEmptyPort();
+            udpClient = new UdpClient(config.LocalHost.Port, AddressFamily.InterNetwork);
             work = true;
             return instance ?? new Network();
         }
 
         public static int Send(byte[] data, IPEndPoint endPoint)
         {
-            var r = client.Send(data, data.Length, endPoint);
+            var r = udpClient.Send(data, data.Length, endPoint);
             return r;
         }
 
-        public static void SendFile(string path, string inRoom, IPEndPoint endPoint)
+        public static async void Send(byte[] data, IPEndPoint endPoint, bool tcp = true)
         {
-            ThreadPool.QueueUserWorkItem(FileBridge, new string[] {path, inRoom });
+            var tcpClient = new TcpClient(AddressFamily.InterNetwork);
+            tcpClient.Connect(Config.Config.GlobalConfig.RemoteHost);
+            var stream = tcpClient.GetStream();
+            stream.Write(data, 0, data.Length);
+            byte[] buffer = new byte[1028];
+            
+            var path = Environment.CurrentDirectory + "\\Download\\";
+
+            if (!File.Exists(path + $".file_{i}"))
+                File.Create(path + $".file_{i}").Close();
+
+            while (await stream.ReadAsync(buffer, 0, buffer.Length) != 0)
+            {
+                var head = Encoding.UTF8.GetString(buffer, 0, 4);
+                if (head == "0001")
+                {
+                    FileStream file = new FileStream(path + $".file_{i}", FileMode.Append);
+                    await file.WriteAsync(buffer, 4, buffer.Length - 4);
+                    file.Close();
+                }
+                else if (head == "0002")
+                {
+                    try
+                    {
+                        var s = Encoding.UTF8.GetString(buffer).Split(':');
+                        File.Move(path + $".file_{i}", path + s[1]);
+                        ++i;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                }
+            }
+
+            stream.Close();
+            tcpClient.Close();
         }
 
-        private static void FileBridge(object o)
+        public static async void SendFile(string path, string room, IPEndPoint endPoint)
         {
             long parts = 0;
-            var arr = o as string[];
-            var path = arr[0];
-            var room = arr[1];
+
             if (path != null && File.Exists(path))
             {
                 const int bufferSize = 1028;
@@ -90,43 +123,31 @@ namespace HelpLib.Wrapper
                 else
                     counts = (long)Math.Floor(fileSize / (double)bufferSize);
 
-                TcpClient tcp = null;
-                NetworkStream stream = null;
+                var tcpClient = new TcpClient(AddressFamily.InterNetwork);
+                tcpClient.Connect(Config.Config.GlobalConfig.RemoteHost);
+                NetworkStream stream = tcpClient.GetStream();
+                var buffer = new byte[bufferSize];
 
-                try
+                buffer[0] = 48;
+                buffer[1] = 48;
+                buffer[2] = 48;
+                buffer[3] = 49;
+                using (FileStream file = new FileStream(path, FileMode.Open))
                 {
-                    tcp = new TcpClient();
-                    tcp.Connect(Config.Config.GlobalConfig.RemoteHost);
-                    stream = tcp.GetStream();
-                }
-                catch (SocketException e)
-                {
-                    MessageBox.Show(e.Message);
-                }
-                finally
-                {
-                    var buffer = new byte[bufferSize];
-                    buffer[0] = 0;
-                    buffer[1] = 0;
-                    buffer[2] = 0;
-                    buffer[3] = 1;
-                    using (FileStream file = new FileStream(path, FileMode.Open))
+                    while (file.Read(buffer, 4, buffer.Length - 4) > 0)
                     {
-                        while (file.Read(buffer, 4, buffer.Length - 4) > 0)
-                        {
-                            stream.Write(buffer, 0, buffer.Length);
-                            if (parts < counts)
-                                ++parts;
-                        }
-                        buffer = Encoding.UTF8.GetBytes($"0002:{info.Name}");
-                        stream.Write(buffer, 0, buffer.Length);
-                        var olo = OloProtocol.GetOlo("file_load", room, Config.Config.GlobalConfig.UserName, fileName);
-                        var data = Encoding.UTF8.GetBytes(olo);
-                        Send(data, Config.Config.GlobalConfig.RemoteHost);
+                        await stream.WriteAsync(buffer, 0, buffer.Length);
+                        if (parts < counts)
+                            ++parts;
                     }
-                    stream.Close();
-                    tcp.Close();
+                    buffer = Encoding.UTF8.GetBytes($"0002:{info.Name}");
+                    stream.Write(buffer, 0, buffer.Length);
+                    var olo = OloProtocol.GetOlo("file_load", room, Config.Config.GlobalConfig.UserName, fileName);
+                    var data = Encoding.UTF8.GetBytes(olo);
+                    Send(data, Config.Config.GlobalConfig.RemoteHost);
                 }
+                stream.Close();
+                tcpClient.Close();
             }
         }
 
@@ -136,7 +157,7 @@ namespace HelpLib.Wrapper
             {
                 try
                 {
-                    UdpReceiveResult result = await client.ReceiveAsync();
+                    UdpReceiveResult result = await udpClient.ReceiveAsync();
                     OnReceive?.Invoke(this, result);
                 }
                 catch { }
@@ -146,7 +167,7 @@ namespace HelpLib.Wrapper
         public void Dispose()
         {
             work = false;
-            client.Close();
+            udpClient.Close();
         }
     }
 }
