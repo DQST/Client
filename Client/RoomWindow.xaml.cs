@@ -77,15 +77,8 @@ namespace Client
             string name = listBox.SelectedItem as string;
             if (name != null)
             {
-                var inputPass = new PassWindow();
-                inputPass.ShowDialog();
-                if (inputPass.DialogResult.HasValue && inputPass.DialogResult.Value)
-                {
-                    var pass = inputPass.pswAnswer.Password;
-                    var olo = OloProtocol.GetOlo("del_room", name, Properties.Settings.Default.UniqueKey, pass);
-                    Network.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
-                    Close();
-                }
+                var olo = OloProtocol.GetOlo("del_room", name, Properties.Settings.Default.UniqueKey);
+                Network.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
             }
         }
 
