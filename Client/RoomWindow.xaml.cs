@@ -32,6 +32,12 @@ namespace Client
                 Close();
             };
 
+            listBox.KeyUp += (s, e) =>
+            {
+                if (e.Key == System.Windows.Input.Key.Enter)
+                    connect_Executed(s, null);
+            };
+
             UpdateButton_Click(this, null);
         }
 
