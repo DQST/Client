@@ -9,6 +9,7 @@ using System.Windows.Input;
 using Microsoft.Win32;
 using Client.View;
 using System.Windows.Controls;
+using System.IO;
 
 namespace Client
 {
@@ -16,7 +17,7 @@ namespace Client
     {
         private OloService service;
         private ConfigFile config;
-        private Network udp;
+        private Network net;
         private bool bridgeWork = true;
 
         public MainWindow()
@@ -39,7 +40,7 @@ namespace Client
             {
                 Config.Load("settings.json", out config);
             }
-            catch (System.IO.FileNotFoundException)
+            catch (FileNotFoundException)
             {
                 config = new ConfigFile("0.0.0.0:14800", "104.236.30.123:14801", "defaultUser");
                 Config.Save("settings.json", config);
@@ -52,11 +53,20 @@ namespace Client
                     Properties.Settings.Default.Save();
                 }
 
+                if(Properties.Settings.Default.FileFolder == string.Empty)
+                {
+                    Properties.Settings.Default.FileFolder = Environment.CurrentDirectory + "\\Download\\";
+                    Properties.Settings.Default.Save();
+                }
+
+                if (!Directory.Exists(Properties.Settings.Default.FileFolder))
+                    Directory.CreateDirectory(Properties.Settings.Default.FileFolder);
+
                 service = new OloService(this);
-                udp = Network.GetInstance(ref config);
+                net = Network.GetInstance(ref config);
                 Config.GlobalConfig = config;
                 Network.OnReceive += Receive;
-                udp.Run();
+                net.Run();
 
                 ThreadPool.QueueUserWorkItem(Bridge);
                 Title = $"{Title} @ {config.UserName}";
@@ -72,7 +82,7 @@ namespace Client
                 Network.Send(olo.ToBytes(), host);
                 Network.Send(olo.ToBytes(), host);
                 Network.Send(olo.ToBytes(), host);
-                Thread.Sleep(500);
+                Thread.Sleep(1000);
             }
         }
 
@@ -109,6 +119,8 @@ namespace Client
             if (tabControl.Exists(roomName) != null)
             {
                 var button = new DownloadButton(fileName);
+                button.downloadButton.Click += (s, e) =>
+                    Network.Send($"0003:{fileName}".ToBytes(), Config.GlobalConfig.RemoteHost, true);
                 tabControl.PushMessage(roomName, $"{userName}:");
                 tabControl.PushMessage(roomName, button);
             }
@@ -153,13 +165,13 @@ namespace Client
         {
             bridgeWork = false;
             Config.Save("settings.json", Config.GlobalConfig);
-            udp.Dispose();
+            net.Dispose();
         }
 
         private void sendFile_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog fileDialog = new OpenFileDialog();
-            fileDialog.Filter = "Text files (*.txt)|*.txt|Image files (*.png, *.jpeg, *.bmp)|*.png;*.jpeg;*.bmp|All files (*.*)|*.*";
+            fileDialog.Filter = "Text files (*.txt)|*.txt|Image files (*.png, *.jpeg, *jpg, *.bmp)|*.png;*.jpeg;*.bmp;*.jpg|All files (*.*)|*.*";
             fileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             if (fileDialog.ShowDialog() == true)
             {
