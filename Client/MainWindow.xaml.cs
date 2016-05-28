@@ -42,7 +42,7 @@ namespace Client
             }
             catch (FileNotFoundException)
             {
-                config = new ConfigFile("0.0.0.0:14800", "104.236.30.123:14801", "defaultUser");
+                config = new ConfigFile("0.0.0.0:49152", "104.236.30.123:14801", "defaultUser");
                 Config.Save("settings.json", config);
             }
             finally
