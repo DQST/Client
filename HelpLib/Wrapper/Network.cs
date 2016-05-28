@@ -6,6 +6,7 @@ using HelpLib.Config;
 using System.Net.NetworkInformation;
 using System.IO;
 using System.Windows;
+using System.Threading;
 
 namespace HelpLib.Wrapper
 {
@@ -15,6 +16,7 @@ namespace HelpLib.Wrapper
         private static UdpClient udpClient;
         private static bool work;
         private static int i = 0;
+        const int bufferSize = 1028;
 
         public static bool IsWork { get { return work; } }
         public static event EventHandler<UdpReceiveResult> OnReceive;
@@ -28,7 +30,7 @@ namespace HelpLib.Wrapper
         {
             bool inUse = false;
             var ipProperties = IPGlobalProperties.GetIPGlobalProperties();
-            var ipEndPoints = ipProperties.GetActiveTcpListeners();
+            var ipEndPoints = ipProperties.GetActiveUdpListeners();
 
             foreach (var item in ipEndPoints)
             {
@@ -65,13 +67,13 @@ namespace HelpLib.Wrapper
             return r;
         }
 
-        public static async void Send(byte[] data, IPEndPoint endPoint, bool tcp = true)
+        public static async void LoadFile(byte[] data, IPEndPoint endPoint)
         {
             var tcpClient = new TcpClient(AddressFamily.InterNetwork);
             tcpClient.Connect(Config.Config.GlobalConfig.RemoteHost);
             var stream = tcpClient.GetStream();
             stream.Write(data, 0, data.Length);
-            byte[] buffer = new byte[1028];
+            byte[] buffer = new byte[bufferSize];
             
             var path = Environment.CurrentDirectory + "\\Download\\";
 
@@ -106,13 +108,27 @@ namespace HelpLib.Wrapper
             tcpClient.Close();
         }
 
-        public static async void SendFile(string path, string room, IPEndPoint endPoint)
+        public static long GetParts(string path)
         {
-            long parts = 0;
+            long counts = 0;
+            FileInfo info = new FileInfo(path);
+            var fileName = info.Name;
+            var fileSize = info.Length;
+
+            if (fileSize <= bufferSize)
+                counts = 1;
+            else
+                counts = fileSize / bufferSize;
+
+            return counts;
+        }
+
+        public static async void SendFile(string path, string room, IPEndPoint endPoint, Action<int> callback)
+        {
+            int parts = 0;
 
             if (path != null && File.Exists(path))
             {
-                const int bufferSize = 1028;
                 FileInfo info = new FileInfo(path);
                 var fileName = info.Name;
                 var fileSize = info.Length;
@@ -121,7 +137,7 @@ namespace HelpLib.Wrapper
                 if (fileSize <= bufferSize)
                     counts = 1;
                 else
-                    counts = (long)Math.Floor(fileSize / (double)bufferSize);
+                    counts = fileSize / bufferSize;
 
                 var tcpClient = new TcpClient(AddressFamily.InterNetwork);
                 tcpClient.Connect(Config.Config.GlobalConfig.RemoteHost);
@@ -138,7 +154,7 @@ namespace HelpLib.Wrapper
                     {
                         await stream.WriteAsync(buffer, 0, buffer.Length);
                         if (parts < counts)
-                            ++parts;
+                            callback(++parts);
                     }
                     buffer = Encoding.UTF8.GetBytes($"0002:{info.Name}");
                     stream.Write(buffer, 0, buffer.Length);

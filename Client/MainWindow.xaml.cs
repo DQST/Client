@@ -120,7 +120,7 @@ namespace Client
             {
                 var button = new DownloadButton(fileName);
                 button.downloadButton.Click += (s, e) =>
-                    Network.Send($"0003:{fileName}".ToBytes(), Config.GlobalConfig.RemoteHost, true);
+                    Network.LoadFile($"0003:{fileName}".ToBytes(), Config.GlobalConfig.RemoteHost);
                 tabControl.PushMessage(roomName, $"{userName}:");
                 tabControl.PushMessage(roomName, button);
             }
@@ -179,8 +179,11 @@ namespace Client
                 var tab = tabControl.GetSelectTab();
                 if (tab != null)
                 {
+                    var count = Network.GetParts(filePath);
+                    var bar = new MProgressBar(count);
                     tabControl.PushMessage(tab.Header.Text, $"{Config.GlobalConfig.UserName}: sending file \"{fileDialog.SafeFileName}\"");
-                    Network.SendFile(filePath, tab.Header.Text, Config.GlobalConfig.RemoteHost);
+                    tabControl.PushMessage(tab.Header.Text, bar);
+                    Network.SendFile(filePath, tab.Header.Text, Config.GlobalConfig.RemoteHost, bar.SetValue);
                 }
             }
         }
