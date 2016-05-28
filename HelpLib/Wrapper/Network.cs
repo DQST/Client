@@ -6,7 +6,6 @@ using HelpLib.Config;
 using System.Net.NetworkInformation;
 using System.IO;
 using System.Windows;
-using System.Threading;
 
 namespace HelpLib.Wrapper
 {
