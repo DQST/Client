@@ -53,14 +53,8 @@ namespace Client
                     Properties.Settings.Default.Save();
                 }
 
-                if(Properties.Settings.Default.FileFolder == string.Empty)
-                {
-                    Properties.Settings.Default.FileFolder = Environment.CurrentDirectory + "\\Downloads\\";
-                    Properties.Settings.Default.Save();
-                }
-
-                if (!Directory.Exists(Properties.Settings.Default.FileFolder))
-                    Directory.CreateDirectory(Properties.Settings.Default.FileFolder);
+                if(!Directory.Exists(Environment.CurrentDirectory + "\\Downloads\\"))
+                    Directory.CreateDirectory(Environment.CurrentDirectory + "\\Downloads\\");
 
                 service = new OloService(this);
                 net = Network.GetInstance(ref config);
