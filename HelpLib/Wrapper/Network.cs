@@ -75,7 +75,7 @@ namespace HelpLib.Wrapper
             byte[] buffer = new byte[bufferSize];
             long count = 0, part = 0;
             
-            var path = Environment.CurrentDirectory + "\\Download\\";
+            var path = Environment.CurrentDirectory + "\\Downloads\\";
 
             if (!File.Exists(path + $".file_{i}"))
                 File.Create(path + $".file_{i}").Close();

@@ -55,7 +55,7 @@ namespace Client
 
                 if(Properties.Settings.Default.FileFolder == string.Empty)
                 {
-                    Properties.Settings.Default.FileFolder = Environment.CurrentDirectory + "\\Download\\";
+                    Properties.Settings.Default.FileFolder = Environment.CurrentDirectory + "\\Downloads\\";
                     Properties.Settings.Default.Save();
                 }
 
