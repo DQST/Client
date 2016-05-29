@@ -65,14 +65,15 @@ namespace HelpLib.Wrapper
             var r = udpClient.Send(data, data.Length, endPoint);
             return r;
         }
-
-        public static async void LoadFile(byte[] data, IPEndPoint endPoint)
+        
+        public static async void LoadFile(byte[] data, IPEndPoint endPoint, Action<long> callbackMax, Action<long> callbackSetValue)
         {
             var tcpClient = new TcpClient(AddressFamily.InterNetwork);
             tcpClient.Connect(Config.Config.GlobalConfig.RemoteHost);
             var stream = tcpClient.GetStream();
             stream.Write(data, 0, data.Length);
             byte[] buffer = new byte[bufferSize];
+            long count = 0, part = 0;
             
             var path = Environment.CurrentDirectory + "\\Download\\";
 
@@ -82,11 +83,19 @@ namespace HelpLib.Wrapper
             while (await stream.ReadAsync(buffer, 0, buffer.Length) != 0)
             {
                 var head = Encoding.UTF8.GetString(buffer, 0, 4);
-                if (head == "0001")
+                if(head == "0000")
+                {
+                    var s = Encoding.UTF8.GetString(buffer).Split(':');
+                    count = long.Parse(s[1]);
+                    callbackMax(count);
+                }
+                else if (head == "0001")
                 {
                     FileStream file = new FileStream(path + $".file_{i}", FileMode.Append);
                     await file.WriteAsync(buffer, 4, buffer.Length - 4);
                     file.Close();
+                    if (part < count)
+                        callbackSetValue(++part);
                 }
                 else if (head == "0002")
                 {
@@ -122,7 +131,7 @@ namespace HelpLib.Wrapper
             return counts;
         }
 
-        public static async void SendFile(string path, string room, IPEndPoint endPoint, Action<int> callback)
+        public static async void SendFile(string path, string room, IPEndPoint endPoint, Action<long> callback)
         {
             int parts = 0;
 
