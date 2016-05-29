@@ -110,6 +110,7 @@ namespace Client
                 tabControl.PushMessage(roomName, $"{userName}: {message}");
         }
 
+        // TODO: add message about upload file
         [OloField(Name = "push_file")]
         private void PushFile(params object[] args)
         {
@@ -120,7 +121,11 @@ namespace Client
             {
                 var button = new DownloadButton(fileName);
                 button.downloadButton.Click += (s, e) =>
-                    Network.LoadFile($"0003:{fileName}".ToBytes(), Config.GlobalConfig.RemoteHost);
+                {
+                    var bar = new MProgressBar();
+                    tabControl.PushMessage(roomName, bar);
+                    Network.LoadFile($"0003:{fileName}".ToBytes(), Config.GlobalConfig.RemoteHost, bar.SetMaximum, bar.SetValue);
+                };
                 tabControl.PushMessage(roomName, $"{userName}:");
                 tabControl.PushMessage(roomName, button);
             }
