@@ -19,7 +19,6 @@ namespace Client
         private ConfigFile config;
         private Network net;
         private bool bridgeWork = true;
-        private Login login;
 
         public MainWindow()
         {
@@ -54,11 +53,10 @@ namespace Client
                     Properties.Settings.Default.Save();
                 }
 
-                if(!Directory.Exists(Environment.CurrentDirectory + "\\Downloads\\"))
+                if (!Directory.Exists(Environment.CurrentDirectory + "\\Downloads\\"))
                     Directory.CreateDirectory(Environment.CurrentDirectory + "\\Downloads\\");
 
                 service = new OloService(this);
-                login = new Login();
                 net = Network.GetInstance(ref config);
                 Config.GlobalConfig = config;
                 Network.OnReceive += Receive;
@@ -66,10 +64,15 @@ namespace Client
 
                 ThreadPool.QueueUserWorkItem(Bridge);
                 Title = $"{Title} @ {config.UserName}";
-                Hide();
-                login.ShowDialog();
-                Show();
             }
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            Hide();
+            var login = new Login();
+            login.Owner = this;
+            login.Show();
         }
 
         private void Bridge(object o)
@@ -108,7 +111,7 @@ namespace Client
             if (tabControl.Exists(roomName) != null)
                 tabControl.PushMessage(roomName, $"{userName}: {message}");
         }
-        
+
         [OloField(Name = "push_file")]
         private void PushFile(params object[] args)
         {
@@ -123,7 +126,7 @@ namespace Client
                     var bar = new MProgressBar();
                     tabControl.PushMessage(roomName, bar);
                     var r = await Network.LoadFile($"0003:{fileName}".ToBytes(), Config.GlobalConfig.RemoteHost, bar.SetMaximum, bar.SetValue);
-                    if(r) tabControl.PushMessage(roomName, $"\"{fileName}\" загружен!");
+                    if (r) tabControl.PushMessage(roomName, $"\"{fileName}\" загружен!");
                 };
                 tabControl.PushMessage(roomName, $"{userName}:");
                 tabControl.PushMessage(roomName, button);
@@ -198,9 +201,9 @@ namespace Client
             var files = Directory.GetFiles(Environment.CurrentDirectory);
             foreach (var file in files)
             {
-                if (System.Text.RegularExpressions.Regex.IsMatch(file, @"(.)\w+\.chm", 
-                    System.Text.RegularExpressions.RegexOptions.ECMAScript | 
-                    System.Text.RegularExpressions.RegexOptions.IgnoreCase | 
+                if (System.Text.RegularExpressions.Regex.IsMatch(file, @"(.)\w+\.chm",
+                    System.Text.RegularExpressions.RegexOptions.ECMAScript |
+                    System.Text.RegularExpressions.RegexOptions.IgnoreCase |
                     System.Text.RegularExpressions.RegexOptions.Compiled))
                 {
                     System.Diagnostics.Process.Start(file);

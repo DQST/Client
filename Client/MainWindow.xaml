@@ -9,7 +9,7 @@
         Width="600" Height="400" 
         MinWidth="600" MinHeight="400"
         WindowStartupLocation="CenterScreen"
-        Background="#F1F2F4">
+        Background="#F1F2F4" Loaded="Window_Loaded">
     <Grid Margin="5,0,5,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
