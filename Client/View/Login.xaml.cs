@@ -46,6 +46,7 @@ namespace Client.View
         [OloField(Name = "enter")]
         public void Enter(params object[] args)
         {
+            Owner.Show();
             Close();
         }
 

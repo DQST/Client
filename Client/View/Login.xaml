@@ -13,7 +13,7 @@
             <TextBlock>Пароль</TextBlock>
             <PasswordBox Name="pass"/>
             <WrapPanel Margin="0,10">
-                <Button Name="enterButton" Width="80" Height="25" HorizontalAlignment="Left">Войти</Button>
+                <Button Name="enterButton" Width="80" Height="25" HorizontalAlignment="Left" IsDefault="True">Войти</Button>
                 <TextBlock Name="register" Margin="10,0,0,0"><Hyperlink>Регистрация</Hyperlink></TextBlock>
             </WrapPanel>
         </StackPanel>
