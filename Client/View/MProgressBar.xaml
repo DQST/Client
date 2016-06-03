@@ -6,6 +6,6 @@
              xmlns:local="clr-namespace:Client.View"
              mc:Ignorable="d">
     <Grid Width="200" Height="30">
-        <ProgressBar Name="bar" BorderBrush="#FF4B4B4B" Value="0" Foreground="#FF0A74BD"/>
+        <ProgressBar Name="bar" BorderBrush="#FF4B4B4B"/>
     </Grid>
 </UserControl>
