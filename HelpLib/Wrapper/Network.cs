@@ -6,6 +6,7 @@ using HelpLib.Config;
 using System.Net.NetworkInformation;
 using System.IO;
 using System.Windows;
+using System.Threading.Tasks;
 
 namespace HelpLib.Wrapper
 {
@@ -65,55 +66,70 @@ namespace HelpLib.Wrapper
             var r = udpClient.Send(data, data.Length, endPoint);
             return r;
         }
-        
-        public static async void LoadFile(byte[] data, IPEndPoint endPoint, Action<long> callbackMax, Action<long> callbackSetValue)
+
+        public static async Task<bool> LoadFile(byte[] data, IPEndPoint endPoint, Action<long> callbackMax, Action<long> callbackSetValue)
         {
             var tcpClient = new TcpClient(AddressFamily.InterNetwork);
-            tcpClient.Connect(Config.Config.GlobalConfig.RemoteHost);
-            var stream = tcpClient.GetStream();
-            stream.Write(data, 0, data.Length);
-            byte[] buffer = new byte[bufferSize];
-            long count = 0, part = 0;
-            
-            var path = Environment.CurrentDirectory + "\\Downloads\\";
 
-            if (!File.Exists(path + $".file_{i}"))
-                File.Create(path + $".file_{i}").Close();
-
-            while (await stream.ReadAsync(buffer, 0, buffer.Length) != 0)
+            try
             {
-                var head = Encoding.UTF8.GetString(buffer, 0, 4);
-                if(head == "0000")
-                {
-                    var s = Encoding.UTF8.GetString(buffer).Split(':');
-                    count = long.Parse(s[1]);
-                    callbackMax(count);
-                }
-                else if (head == "0001")
-                {
-                    FileStream file = new FileStream(path + $".file_{i}", FileMode.Append);
-                    await file.WriteAsync(buffer, 4, buffer.Length - 4);
-                    file.Close();
-                    if (part < count)
-                        callbackSetValue(++part);
-                }
-                else if (head == "0002")
-                {
-                    try
-                    {
-                        var s = Encoding.UTF8.GetString(buffer).Split(':');
-                        File.Move(path + $".file_{i}", path + s[1]);
-                        ++i;
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message);
-                    }
-                }
+                tcpClient.Connect(Config.Config.GlobalConfig.RemoteHost);
+            }
+            catch (SocketException)
+            {
+                MessageBox.Show("Ошибка загрузки файла!\nУдаленный сервер недоступен!\nПовторите попытку позже!",
+                        "Ошибка отправки файла", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
-            stream.Close();
-            tcpClient.Close();
+            if (tcpClient.Connected)
+            {
+                var stream = tcpClient.GetStream();
+                stream.Write(data, 0, data.Length);
+                byte[] buffer = new byte[bufferSize];
+                long count = 0, part = 0;
+
+                var path = Environment.CurrentDirectory + "\\Downloads\\";
+
+                if (!File.Exists(path + $".file_{i}"))
+                    File.Create(path + $".file_{i}").Close();
+
+                while (await stream.ReadAsync(buffer, 0, buffer.Length) != 0)
+                {
+                    var head = Encoding.UTF8.GetString(buffer, 0, 4);
+                    if (head == "0000")
+                    {
+                        var s = Encoding.UTF8.GetString(buffer).Split(':');
+                        count = long.Parse(s[1]);
+                        callbackMax(count);
+                    }
+                    else if (head == "0001")
+                    {
+                        FileStream file = new FileStream(path + $".file_{i}", FileMode.Append);
+                        await file.WriteAsync(buffer, 4, buffer.Length - 4);
+                        file.Close();
+                        if (part < count)
+                            callbackSetValue(++part);
+                    }
+                    else if (head == "0002")
+                    {
+                        try
+                        {
+                            var s = Encoding.UTF8.GetString(buffer).Split(':');
+                            File.Move(path + $".file_{i}", path + s[1]);
+                            ++i;
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                        }
+                    }
+                }
+
+                stream.Close();
+                tcpClient.Close();
+                return true;
+            }
+            return false;
         }
 
         public static long GetParts(string path)
@@ -148,30 +164,43 @@ namespace HelpLib.Wrapper
                     counts = fileSize / bufferSize;
 
                 var tcpClient = new TcpClient(AddressFamily.InterNetwork);
-                tcpClient.Connect(Config.Config.GlobalConfig.RemoteHost);
-                NetworkStream stream = tcpClient.GetStream();
-                var buffer = new byte[bufferSize];
 
-                buffer[0] = 48;
-                buffer[1] = 48;
-                buffer[2] = 48;
-                buffer[3] = 49;
-                using (FileStream file = new FileStream(path, FileMode.Open))
+                try
                 {
-                    while (file.Read(buffer, 4, buffer.Length - 4) > 0)
-                    {
-                        await stream.WriteAsync(buffer, 0, buffer.Length);
-                        if (parts < counts)
-                            callback(++parts);
-                    }
-                    buffer = Encoding.UTF8.GetBytes($"0002:{info.Name}");
-                    stream.Write(buffer, 0, buffer.Length);
-                    var olo = OloProtocol.GetOlo("file_load", room, Config.Config.GlobalConfig.UserName, fileName);
-                    var data = Encoding.UTF8.GetBytes(olo);
-                    Send(data, Config.Config.GlobalConfig.RemoteHost);
+                    tcpClient.Connect(Config.Config.GlobalConfig.RemoteHost);
                 }
-                stream.Close();
-                tcpClient.Close();
+                catch (SocketException)
+                {
+                    MessageBox.Show("Ошибка отправки файла!\nУдаленный сервер недоступен!\nПовторите попытку позже!", 
+                        "Ошибка отправки файла", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+
+                if (tcpClient.Connected)
+                {
+                    NetworkStream stream = tcpClient.GetStream();
+                    var buffer = new byte[bufferSize];
+
+                    buffer[0] = 48;
+                    buffer[1] = 48;
+                    buffer[2] = 48;
+                    buffer[3] = 49;
+                    using (FileStream file = new FileStream(path, FileMode.Open))
+                    {
+                        while (file.Read(buffer, 4, buffer.Length - 4) > 0)
+                        {
+                            await stream.WriteAsync(buffer, 0, buffer.Length);
+                            if (parts < counts)
+                                callback(++parts);
+                        }
+                        buffer = Encoding.UTF8.GetBytes($"0002:{info.Name}");
+                        stream.Write(buffer, 0, buffer.Length);
+                        var olo = OloProtocol.GetOlo("file_load", room, Config.Config.GlobalConfig.UserName, fileName);
+                        var data = Encoding.UTF8.GetBytes(olo);
+                        Send(data, Config.Config.GlobalConfig.RemoteHost);
+                    }
+                    stream.Close();
+                    tcpClient.Close();
+                }
             }
         }
 

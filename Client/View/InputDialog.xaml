@@ -19,14 +19,14 @@
         </Grid.RowDefinitions>
         <Label Name="lblQuestion">Question:</Label>
         <TextBox Name="txtAnswer" Grid.Row="1" MinWidth="250"/>
-        <CheckBox Name="flag" Grid.Row="2" IsThreeState="False" Content="Private"/>
+        <CheckBox Name="flag" Grid.Row="2" IsThreeState="False" Content="Закрытая"/>
         <StackPanel Name="stackPanel" Grid.Row="3" Visibility="Collapsed">
-            <Label Name="pswLabel">Password:</Label>
+            <Label Name="pswLabel">Пароль:</Label>
             <PasswordBox Name="pswAnswer" Password=""/>
         </StackPanel>
         <WrapPanel Grid.Row="4" Grid.ColumnSpan="2" HorizontalAlignment="Right" Margin="0,15,0,0">
-            <Button x:Name="btnDialogOk" IsDefault="True" MinWidth="60" Margin="0,0,10,0">_Ok</Button>
-            <Button x:Name="btnDialogCancel" IsCancel="True" MinWidth="60">_Cancel</Button>
+            <Button x:Name="btnDialogOk" IsDefault="True" MinWidth="60" Margin="0,0,10,0">ОК</Button>
+            <Button x:Name="btnDialogCancel" IsCancel="True" MinWidth="60">Отмена</Button>
         </WrapPanel>
     </Grid>
 </Window>

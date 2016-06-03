@@ -21,12 +21,6 @@ namespace Client
                 last = User;
             };
 
-            NetworkItem.MouseLeftButtonUp += (s, e) =>
-            {
-                Network.Visibility = Visibility.Visible;
-                last = Network;
-            };
-
             treeView.SelectedItemChanged += (s, e) =>
             {
                 if (last != null)

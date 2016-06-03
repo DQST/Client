@@ -103,8 +103,7 @@ namespace Client
             if (tabControl.Exists(roomName) != null)
                 tabControl.PushMessage(roomName, $"{userName}: {message}");
         }
-
-        // TODO: add message about upload file
+        
         [OloField(Name = "push_file")]
         private void PushFile(params object[] args)
         {
@@ -114,11 +113,12 @@ namespace Client
             if (tabControl.Exists(roomName) != null)
             {
                 var button = new DownloadButton(fileName);
-                button.downloadButton.Click += (s, e) =>
+                button.downloadButton.Click += async (s, e) =>
                 {
                     var bar = new MProgressBar();
                     tabControl.PushMessage(roomName, bar);
-                    Network.LoadFile($"0003:{fileName}".ToBytes(), Config.GlobalConfig.RemoteHost, bar.SetMaximum, bar.SetValue);
+                    var r = await Network.LoadFile($"0003:{fileName}".ToBytes(), Config.GlobalConfig.RemoteHost, bar.SetMaximum, bar.SetValue);
+                    if(r) tabControl.PushMessage(roomName, $"\"{fileName}\" загружен!");
                 };
                 tabControl.PushMessage(roomName, $"{userName}:");
                 tabControl.PushMessage(roomName, button);
@@ -164,13 +164,14 @@ namespace Client
         {
             bridgeWork = false;
             Config.Save("settings.json", Config.GlobalConfig);
+            Network.OnReceive -= Receive;
             net.Dispose();
         }
 
         private void sendFile_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog fileDialog = new OpenFileDialog();
-            fileDialog.Filter = "Text files (*.txt)|*.txt|Image files (*.png, *.jpeg, *jpg, *.bmp)|*.png;*.jpeg;*.bmp;*.jpg|All files (*.*)|*.*";
+            fileDialog.Filter = "Все файлы (*.*)|*.*|Текстовые файлы (*.txt, *.doc, *.docx)|*.txt;*.doc;*docx|Изображения (*.png, *.jpeg, *jpg, *.bmp)|*.png;*.jpeg;*.bmp;*.jpg";
             fileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             if (fileDialog.ShowDialog() == true)
             {
@@ -180,11 +181,28 @@ namespace Client
                 {
                     var count = Network.GetParts(filePath);
                     var bar = new MProgressBar(count);
-                    tabControl.PushMessage(tab.Header.Text, $"{Config.GlobalConfig.UserName}: sending file \"{fileDialog.SafeFileName}\"");
+                    tabControl.PushMessage(tab.Header.Text, $"{Config.GlobalConfig.UserName}: отправка файла: \"{fileDialog.SafeFileName}\"");
                     tabControl.PushMessage(tab.Header.Text, bar);
                     Network.SendFile(filePath, tab.Header.Text, Config.GlobalConfig.RemoteHost, bar.SetValue);
                 }
             }
+        }
+
+        private void showHelp_Click(object sender, RoutedEventArgs e)
+        {
+            var files = Directory.GetFiles(Environment.CurrentDirectory);
+            foreach (var file in files)
+            {
+                if (System.Text.RegularExpressions.Regex.IsMatch(file, @"(.)\w+\.chm", 
+                    System.Text.RegularExpressions.RegexOptions.ECMAScript | 
+                    System.Text.RegularExpressions.RegexOptions.IgnoreCase | 
+                    System.Text.RegularExpressions.RegexOptions.Compiled))
+                {
+                    System.Diagnostics.Process.Start(file);
+                    return;
+                }
+            }
+            MessageBox.Show("Help file not found!", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }

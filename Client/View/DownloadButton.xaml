@@ -7,11 +7,11 @@
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="100">
     <Grid>
-        <Ellipse Width="80" Height="80">
-            <Ellipse.Fill>
+        <Rectangle RadiusX="10" RadiusY="10">
+            <Rectangle.Fill>
                 <SolidColorBrush Color="#FFE6D2D2" Opacity="0.5"/>
-            </Ellipse.Fill>
-        </Ellipse>
+            </Rectangle.Fill>
+        </Rectangle>
         <Button Name="downloadButton" 
                 Content="&#8595;" 
                 FontSize="18" 

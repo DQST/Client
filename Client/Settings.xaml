@@ -5,52 +5,36 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
-        Title="Settings" 
-        Height="196" 
-        Width="392.97" 
+        Title="Настройки" 
+        Height="261" 
+        Width="487.985" 
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize"
         Background="#F1F2F4">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <TreeView Name="treeView" Grid.Column="0">
-            <TreeViewItem Header="Settings">
-                <TreeViewItem Name="UserItem" Header="User"/>
-                <TreeViewItem Name="NetworkItem" Header="Network"/>
+            <TreeViewItem Header="Общие">
+                <TreeViewItem Name="UserItem" Header="Пользовательские"/>
             </TreeViewItem>
         </TreeView>
         <StackPanel Name="User" 
                     Grid.Column="1"
-                    Visibility="Visible" 
+                    Visibility="Visible"
                     Margin="5">
-            <WrapPanel Margin="0,10,0,10">
-                <Label Margin="0,0,14,0">Nickname:</Label>
-                <TextBox x:Name="userName" Width="160"/>
+            <Label>Имя:</Label>
+            <TextBox x:Name="userName" Width="160" HorizontalAlignment="Left"/>
+            <Label>Локальный адресс:</Label>
+            <TextBox x:Name="localIP" Width="160" HorizontalAlignment="Left"/>
+            <Label>Адресс сервера:</Label>
+            <TextBox x:Name="remoteHost" Width="160" HorizontalAlignment="Left"/>
+            <WrapPanel HorizontalAlignment="Left" Margin="0,10,0,0">
+                <Button IsDefault="True" Width="62" Click="saveButton_Click">Сохранить</Button>
+                <Button IsCancel="True" Width="50" Margin="10,0,10,0">Отмена</Button>
             </WrapPanel>
-            <WrapPanel Margin="0,0,0,10">
-                <Label Margin="0,0,26,0">Local IP:</Label>
-                <TextBox x:Name="localIP" Width="160"/>
-            </WrapPanel>
-            <WrapPanel Margin="0,0,0,10">
-                <Label>Remote host:</Label>
-                <TextBox x:Name="remoteHost" Width="160"/>
-            </WrapPanel>
-            <WrapPanel HorizontalAlignment="Right">
-                <Button IsDefault="True" Width="50" Margin="0,0,10,0" Click="saveButton_Click">Save</Button>
-                <Button IsCancel="True" Width="50" Margin="0,0,10,0">Cancel</Button>
-            </WrapPanel>
-        </StackPanel>
-        <StackPanel Name="Network" 
-                    Grid.Column="1"
-                    Visibility="Hidden"
-                    Margin="5"
-                    IsEnabled="False">
-            <TextBlock>Enabled:</TextBlock>
-            <CheckBox IsChecked="False" IsThreeState="False">UPnP</CheckBox>
-            <CheckBox IsChecked="False" IsThreeState="False">Nat-PNP</CheckBox>
         </StackPanel>
     </Grid>
 </Window>

@@ -17,14 +17,17 @@
             <RowDefinition Height="80"/>
         </Grid.RowDefinitions>
         <Menu VerticalAlignment="Top" Grid.Column="0" Grid.Row="0" Margin="-3,0,-3,0">
-            <MenuItem Header="File">
-                <MenuItem Name="roomsButton" Header="Rooms" Click="roomsButton_Click"/>
-                <MenuItem Name="sendFile" Header="Send file..." Click="sendFile_Click"/>
+            <MenuItem Header="Файл">
+                <MenuItem Name="roomsButton" Header="Комнаты" Click="roomsButton_Click"/>
+                <MenuItem Name="sendFile" Header="Прикрепить..." Click="sendFile_Click"/>
                 <Separator/>
-                <MenuItem Name="exitButton" Header="Exit"/>
+                <MenuItem Name="exitButton" Header="Выход"/>
             </MenuItem>
-            <MenuItem Header="Edit">
-                <MenuItem Name="settingsButton" Header="Settings" Click="settingsButton_Click"/>
+            <MenuItem Header="Правка">
+                <MenuItem Name="settingsButton" Header="Настройки" Click="settingsButton_Click"/>
+            </MenuItem>
+            <MenuItem Header="Справка">
+                <MenuItem Name="showHelp" Header="Просмотр справки" Click="showHelp_Click"/>
             </MenuItem>
         </Menu>
         <TabControl x:Name="tabControl" Grid.Row="1"/>
@@ -35,10 +38,10 @@
             </Grid.ColumnDefinitions>
             <TextBox x:Name="inputTextBox" 
                      TextWrapping="Wrap" 
-                     AcceptsReturn="True"/>
+                     AcceptsReturn="True"
+                     ToolTip="Введите сообщение"/>
             <Button x:Name="sendButton" 
                     Grid.Column="1" 
-                    Content="Send" 
                     Click="sendButton_Click">
                 <Button.Template>
                     <ControlTemplate>
@@ -52,7 +55,7 @@
                                      StrokeThickness="0" 
                                      Stroke="#FF96C750"/>
                             <Label x:Name="contentSurface" 
-                                   Content="Send" 
+                                   Content="Отправить" 
                                    HorizontalAlignment="Center" 
                                    Foreground="Black"
                                    VerticalAlignment="Center" 
