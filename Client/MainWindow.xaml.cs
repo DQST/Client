@@ -19,6 +19,7 @@ namespace Client
         private ConfigFile config;
         private Network net;
         private bool bridgeWork = true;
+        private Login login;
 
         public MainWindow()
         {
@@ -57,6 +58,7 @@ namespace Client
                     Directory.CreateDirectory(Environment.CurrentDirectory + "\\Downloads\\");
 
                 service = new OloService(this);
+                login = new Login();
                 net = Network.GetInstance(ref config);
                 Config.GlobalConfig = config;
                 Network.OnReceive += Receive;
@@ -64,6 +66,9 @@ namespace Client
 
                 ThreadPool.QueueUserWorkItem(Bridge);
                 Title = $"{Title} @ {config.UserName}";
+                Hide();
+                login.ShowDialog();
+                Show();
             }
         }
 
