@@ -9,7 +9,7 @@
     <Grid>
         <Rectangle RadiusX="10" RadiusY="10">
             <Rectangle.Fill>
-                <SolidColorBrush Color="#FFE6D2D2" Opacity="0.5"/>
+                <SolidColorBrush Color="#FFEA8B8B"/>
             </Rectangle.Fill>
         </Rectangle>
         <Button Name="downloadButton" 
