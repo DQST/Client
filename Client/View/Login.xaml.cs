@@ -28,11 +28,15 @@ namespace Client.View
         {
             InitializeComponent();
             service = new OloService(this);
+
+            Closing += (s, e) => Owner.Close();
+
             Network.OnReceive += (s, e) =>
             {
                 var data = OloProtocol.Encode(e.Buffer.ToStr());
                 service.Parse(data, e.RemoteEndPoint);
             };
+
             enterButton.Click += (s, e) =>
             {
                 if (!string.IsNullOrWhiteSpace(login.Text) && !string.IsNullOrWhiteSpace(pass.Password))
