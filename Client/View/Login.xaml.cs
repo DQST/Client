@@ -48,16 +48,24 @@ namespace Client.View
         }
 
         [OloField(Name = "enter")]
-        public void Enter(params object[] args)
+        private void Enter(params object[] args)
         {
             Owner.Show();
-            Close();
+            Hide();
         }
 
         [OloField(Name = "error")]
-        public void Error(params object[] args)
+        private void Error(params object[] args)
         {
             MessageBox.Show(args[0].ToString(), "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
+        private void linkClick(object sender, RoutedEventArgs e)
+        {
+            Hide();
+            var register = new Register();
+            register.Owner = this;
+            register.ShowDialog();
         }
     }
 }
