@@ -51,7 +51,7 @@ namespace Client
                 var pass = input.pswAnswer.Password;
                 if (!string.IsNullOrWhiteSpace(name))
                 {
-                    var olo = OloProtocol.GetOlo("add_room", name, Properties.Settings.Default.UniqueKey, pass);
+                    var olo = OloProtocol.GetOlo("add_room", name, Config.GlobalConfig.UserName, pass);
                     Network.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
                 }
             }
