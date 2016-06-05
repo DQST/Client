@@ -50,6 +50,10 @@ namespace Client.View
         [OloField(Name = "enter")]
         private void Enter(params object[] args)
         {
+            MessageBox.Show(args[0].ToString(), "Информация", MessageBoxButton.OK, MessageBoxImage.Information);
+            var config = Config.GlobalConfig;
+            Config.GlobalConfig = new ConfigFile(config.LocalHost.ToString(), 
+                config.RemoteHost.ToString(), args[1].ToString());
             Owner.Show();
             Hide();
         }
