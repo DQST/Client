@@ -83,7 +83,7 @@ namespace Client
             string name = listBox.SelectedItem as string;
             if (name != null)
             {
-                var olo = OloProtocol.GetOlo("del_room", name, Properties.Settings.Default.UniqueKey);
+                var olo = OloProtocol.GetOlo("del_room", name, Config.GlobalConfig.UserName);
                 Network.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
             }
         }
