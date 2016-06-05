@@ -63,7 +63,6 @@ namespace Client
                 net.Run();
 
                 ThreadPool.QueueUserWorkItem(Bridge);
-                Title = $"{Title} @ {config.UserName}";
             }
         }
 
@@ -73,6 +72,7 @@ namespace Client
             var login = new Login();
             login.Owner = this;
             login.Show();
+            Title = $"{Title} @ {config.UserName}";
         }
 
         private void Bridge(object o)
