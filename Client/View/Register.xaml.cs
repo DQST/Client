@@ -41,7 +41,7 @@ namespace Client.View
             {
                 if (!string.IsNullOrWhiteSpace(login.Text) && !string.IsNullOrWhiteSpace(pass.Password))
                 {
-                    var olo = OloProtocol.GetOlo("register", login.Text, pass.Password);
+                    var olo = OloProtocol.GetOlo("register", login.Text, nickName.Text, pass.Password);
                     Network.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
                 }
             };
