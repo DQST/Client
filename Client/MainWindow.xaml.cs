@@ -190,7 +190,7 @@ namespace Client
                     var bar = new MProgressBar(count);
                     tabControl.PushMessage(tab.Header.Text, $"{Config.GlobalConfig.UserName}: отправка файла: \"{fileDialog.SafeFileName}\"");
                     tabControl.PushMessage(tab.Header.Text, bar);
-                    Network.SendFile(filePath, tab.Header.Text, Config.GlobalConfig.RemoteHost, bar.SetValue);
+                    Network.SendFile(filePath, tab.Header.Text, bar.SetValue);
                 }
             }
         }
