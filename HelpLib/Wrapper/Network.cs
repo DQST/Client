@@ -7,9 +7,17 @@ using System.Net.NetworkInformation;
 using System.IO;
 using System.Windows;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace HelpLib.Wrapper
 {
+    class SFile<T>
+    {
+        public string RoomName { get; set; }
+        public string FilePath { get; set; }
+        public Action<T> Callback { get; set; }
+    }
+
     public class Network : IDisposable
     {
         private static Network instance;
@@ -147,13 +155,23 @@ namespace HelpLib.Wrapper
             return counts;
         }
 
-        public static async void SendFile(string path, string room, IPEndPoint endPoint, Action<long> callback)
+        public static void SendFile(string path, string room, Action<long> callback)
         {
+            var file = new SFile<long>();
+            file.FilePath = path;
+            file.RoomName = room;
+            file.Callback = callback;
+            ThreadPool.QueueUserWorkItem(SendBackground, file);
+        }
+
+        private static void SendBackground(object o)
+        {
+            var f = o as SFile<long>;
             int parts = 0;
 
-            if (path != null && File.Exists(path))
+            if (f != null && File.Exists(f.FilePath))
             {
-                FileInfo info = new FileInfo(path);
+                FileInfo info = new FileInfo(f.FilePath);
                 var fileName = info.Name;
                 var fileSize = info.Length;
                 long counts;
@@ -171,7 +189,7 @@ namespace HelpLib.Wrapper
                 }
                 catch (SocketException)
                 {
-                    MessageBox.Show("Ошибка отправки файла!\nУдаленный сервер недоступен!\nПовторите попытку позже!", 
+                    MessageBox.Show("Ошибка отправки файла!\nУдаленный сервер недоступен!\nПовторите попытку позже!",
                         "Ошибка отправки файла", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
 
@@ -184,17 +202,21 @@ namespace HelpLib.Wrapper
                     buffer[1] = 48;
                     buffer[2] = 48;
                     buffer[3] = 49;
-                    using (FileStream file = new FileStream(path, FileMode.Open))
+                    using (FileStream file = new FileStream(f.FilePath, FileMode.Open))
                     {
                         while (file.Read(buffer, 4, buffer.Length - 4) > 0)
                         {
-                            await stream.WriteAsync(buffer, 0, buffer.Length);
+                            send:
+                            int count = tcpClient.Client.Send(buffer, 0, buffer.Length, SocketFlags.None);
+                            if (!count.Equals(buffer.Length))
+                                goto send;
+
                             if (parts < counts)
-                                callback(++parts);
+                                f.Callback(++parts);
                         }
                         buffer = Encoding.UTF8.GetBytes($"0002:{info.Name}");
                         stream.Write(buffer, 0, buffer.Length);
-                        var olo = OloProtocol.GetOlo("file_load", room, Config.Config.GlobalConfig.UserName, fileName);
+                        var olo = OloProtocol.GetOlo("file_load", f.RoomName, Config.Config.GlobalConfig.UserName, fileName);
                         var data = Encoding.UTF8.GetBytes(olo);
                         Send(data, Config.Config.GlobalConfig.RemoteHost);
                     }
