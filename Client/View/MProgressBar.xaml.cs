@@ -24,7 +24,7 @@ namespace Client.View
 
         public void SetValue(long v)
         {
-            bar.Value = v;
+            bar.Dispatcher.Invoke(() => bar.Value = v);
         }
     }
 }
