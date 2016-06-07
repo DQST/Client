@@ -6,8 +6,7 @@
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
         Title="Chat v0.1" 
-        Width="600" Height="400" 
-        MinWidth="600" MinHeight="400"
+        Width="839" Height="527"
         WindowStartupLocation="CenterScreen"
         Background="#F1F2F4" Loaded="Window_Loaded">
     <Grid Margin="5,0,5,0">

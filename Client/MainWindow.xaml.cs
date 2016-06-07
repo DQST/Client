@@ -10,6 +10,8 @@ using Microsoft.Win32;
 using Client.View;
 using System.Windows.Controls;
 using System.IO;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Client
 {
@@ -47,12 +49,6 @@ namespace Client
             }
             finally
             {
-                if (Properties.Settings.Default.UniqueKey == string.Empty)
-                {
-                    Properties.Settings.Default.UniqueKey = Config.GetUniqueKey();
-                    Properties.Settings.Default.Save();
-                }
-
                 if (!Directory.Exists(Environment.CurrentDirectory + "\\Downloads\\"))
                     Directory.CreateDirectory(Environment.CurrentDirectory + "\\Downloads\\");
 
@@ -71,8 +67,7 @@ namespace Client
             Hide();
             var login = new Login();
             login.Owner = this;
-            login.Show();
-            Title = $"{Title} @ {config.UserName}";
+            login.ShowDialog();
         }
 
         private void Bridge(object o)
@@ -99,7 +94,11 @@ namespace Client
         {
             var roomName = args[0].ToString();
             if (tabControl.Exists(roomName) == null)
+            {
                 tabControl.AddTab(roomName);
+                var olo = OloProtocol.GetOlo("get_history", roomName);
+                Network.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
+            }
         }
 
         [OloField(Name = "push_message")]
@@ -110,6 +109,24 @@ namespace Client
             var message = args[2].ToString();
             if (tabControl.Exists(roomName) != null)
                 tabControl.PushMessage(roomName, $"{userName}: {message}");
+        }
+
+        [OloField(Name = "push_users")]
+        private void SetUserList(params object[] args)
+        {
+            var roomName = args[0].ToString();
+            var array = args[2] as IEnumerable;
+            if (tabControl.Exists(roomName) != null)
+                tabControl.PushUser(roomName, array);
+        }
+
+        [OloField(Name = "set_nickname")]
+        private void SetNickname(params object[] args)
+        {
+            var oldConfig = Config.GlobalConfig;
+            Config.GlobalConfig = new ConfigFile(oldConfig.LocalHost.ToString(), 
+                oldConfig.RemoteHost.ToString(), args[0].ToString());
+            Title = $"Chat v0.1 @ {args[0].ToString()}";
         }
 
         [OloField(Name = "push_file")]
@@ -164,7 +181,7 @@ namespace Client
             var settings = new Settings();
             settings.Owner = this;
             settings.ShowDialog();
-            Title = $"{Title.Split('@')[0]} @ {Config.GlobalConfig.UserName}";
+            Title = $"Chat v0.1 @ {Config.GlobalConfig.UserName}";
         }
 
         public void Dispose()
