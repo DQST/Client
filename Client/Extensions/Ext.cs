@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Client.View;
 using System.Windows.Controls;
+using System.Collections;
 
 namespace Client.Extensions
 {
@@ -30,11 +31,19 @@ namespace Client.Extensions
             if (Exists(control, name) == null)
             {
                 var tab = new UserUITabItem(name, isClosed);
-                var grid = new Grid();
-                grid.Children.Add(new ListBox() { Name = "msgListBox" });
-                tab.Content = grid;
+                tab.Content = new UserItem() { Height = tab.Height };
                 int index = control.Items.Add(tab);
                 control.SelectedIndex = index;
+            }
+        }
+
+        public static void PushUser(this TabControl control, string name, IEnumerable obj)
+        {
+            var rez = control.Exists(name);
+            if (rez != null)
+            {
+                var item = rez.Content as UserItem;
+                item?.SetUsers(obj);
             }
         }
 
@@ -43,19 +52,8 @@ namespace Client.Extensions
             var rez = control.Exists(name);
             if (rez != null)
             {
-                var grid = rez.Content as Grid;
-                foreach (var i in grid?.Children)
-                {
-                    var listBox = i as ListBox;
-                    if (listBox != null && listBox.Name == "msgListBox")
-                    {
-                        listBox.Items.Add(obj);
-                        listBox.SelectedIndex = listBox.Items.Count - 1;
-                        listBox.ScrollIntoView(listBox.SelectedItem);
-                        listBox.SelectedIndex = -1;
-                        return;
-                    }
-                }
+                var item = rez.Content as UserItem;
+                item?.PushMessage(obj);
             }
         }
 
