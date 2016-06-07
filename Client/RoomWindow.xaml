@@ -93,7 +93,7 @@
             </ListBox.ContextMenu>
             <ListBox.Resources>
                 <Style TargetType="{x:Type ListBoxItem}">
-                    <Setter Property="ToolTip" Value="Double click to connect"></Setter>
+                    <Setter Property="ToolTip" Value="Двойной щелчок для соединения"></Setter>
                     <Setter Property="Background" Value="LightSteelBlue"/>
                     <Setter Property="Margin" Value="1"/>
                     <Setter Property="Padding" Value="5"/>

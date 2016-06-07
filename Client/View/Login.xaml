@@ -8,6 +8,13 @@
         Title="Вход" SizeToContent="WidthAndHeight" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid Margin="5" Width="250">
         <StackPanel>
+            <Button Name="settings"
+                    Width="25" 
+                    Height="25" 
+                    HorizontalAlignment="Right" 
+                    BorderBrush="#FFDDDDDD" 
+                    Background="#FFDDDDDD" 
+                    Content="&#9881;"/>
             <TextBlock>Логин:</TextBlock>
             <TextBox Name="login"/>
             <TextBlock>Пароль:</TextBlock>

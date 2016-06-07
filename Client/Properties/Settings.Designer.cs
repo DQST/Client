@@ -25,13 +25,13 @@ namespace Client.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string UniqueKey {
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public long UserID {
             get {
-                return ((string)(this["UniqueKey"]));
+                return ((long)(this["UserID"]));
             }
             set {
-                this["UniqueKey"] = value;
+                this["UserID"] = value;
             }
         }
     }

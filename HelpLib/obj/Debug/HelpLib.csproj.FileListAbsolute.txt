@@ -13,3 +13,4 @@ d:\Диплом\Client_v0.1\HelpLib\obj\Debug\HelpLib.dll
 d:\Диплом\Client_v0.1\HelpLib\obj\Debug\HelpLib.pdb
 D:\Диплом\Client_v0.1\HelpLib\bin\Debug\Newtonsoft.Json.dll
 D:\Диплом\Client_v0.1\HelpLib\bin\Debug\Newtonsoft.Json.xml
+D:\Диплом\Client_v0.1\HelpLib\obj\Debug\HelpLib.csprojResolveAssemblyReference.cache

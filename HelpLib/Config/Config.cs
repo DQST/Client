@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Net;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
@@ -29,15 +28,6 @@ namespace HelpLib.Config
     public class Config
     {
         public static ConfigFile GlobalConfig { get; set; }
-
-        public static string GetUniqueKey()
-        {
-            var g = Guid.NewGuid();
-            var key = Convert.ToBase64String(g.ToByteArray());
-            key = key.Replace("=", "");
-            key = key.Replace("+", "");
-            return key;
-        }
 
         public static void Load(string path, out ConfigFile configFile)
         {

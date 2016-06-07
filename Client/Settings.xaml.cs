@@ -1,5 +1,7 @@
 ﻿using System.Windows;
+using HelpLib.Wrapper;
 using HelpLib.Config;
+using Client.Extensions;
 
 namespace Client
 {
@@ -30,7 +32,9 @@ namespace Client
 
         private void saveButton_Click(object sender, RoutedEventArgs e)
         {
-            Config.GlobalConfig = new ConfigFile(localIP.Text, remoteHost.Text, userName.Text);
+            Config.GlobalConfig = new ConfigFile(localIP.Text, remoteHost.Text, Config.GlobalConfig.UserName);
+            var olo = OloProtocol.GetOlo("change_nickname", Properties.Settings.Default.UserID, userName.Text);
+            Network.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
             DialogResult = true;
             Close();
         }

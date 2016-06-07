@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 D:\Диплом\Client_v0.1\Client\App.xaml
-10-780621274
+11-54677580
 
-20-1544421562
+21-442597725
 16-652831107
-MainWindow.xaml;RoomWindow.xaml;Settings.xaml;View\DownloadButton.xaml;View\Login.xaml;View\MProgressBar.xaml;View\PassWindow.xaml;View\InputDialog.xaml;View\Register.xaml;View\UserTabItem.xaml;
+MainWindow.xaml;RoomWindow.xaml;Settings.xaml;View\DownloadButton.xaml;View\Login.xaml;View\MProgressBar.xaml;View\PassWindow.xaml;View\InputDialog.xaml;View\Register.xaml;View\UserItem.xaml;View\UserTabItem.xaml;
 
 True
 

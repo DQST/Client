@@ -32,7 +32,7 @@ namespace Client
                 Close();
             };
 
-            listBox.KeyUp += (s, e) =>
+            listBox.KeyDown += (s, e) =>
             {
                 if (e.Key == System.Windows.Input.Key.Enter)
                     connect_Executed(s, null);
@@ -78,6 +78,12 @@ namespace Client
                 listBox.Items.Add(args[i].ToString());
         }
 
+        [OloField(Name = "con_to")]
+        private void Connect(params object[] args)
+        {
+            Close();
+        }
+
         private void delete_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
         {
             string name = listBox.SelectedItem as string;
@@ -100,7 +106,6 @@ namespace Client
                     var pass = inputPass.pswAnswer.Password;
                     var olo = OloProtocol.GetOlo("con_to", name, Config.GlobalConfig.UserName, pass);
                     Network.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
-                    Close();
                 }
             }
         }

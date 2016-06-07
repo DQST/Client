@@ -37,6 +37,12 @@ namespace Client.View
                 service.Parse(data, e.RemoteEndPoint);
             };
 
+            settings.Click += (s, e) =>
+            {
+                var settings = new Settings();
+                settings.ShowDialog();
+            };
+
             enterButton.Click += (s, e) =>
             {
                 if (!string.IsNullOrWhiteSpace(login.Text) && !string.IsNullOrWhiteSpace(pass.Password))
@@ -54,6 +60,9 @@ namespace Client.View
             var config = Config.GlobalConfig;
             Config.GlobalConfig = new ConfigFile(config.LocalHost.ToString(), 
                 config.RemoteHost.ToString(), args[1].ToString());
+            Properties.Settings.Default.UserID = long.Parse(args[2].ToString());
+            Properties.Settings.Default.Save();
+            Owner.Title = $"Chat v0.1 @ {args[1].ToString()}";
             Owner.Show();
             Hide();
         }
