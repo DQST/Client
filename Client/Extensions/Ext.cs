@@ -2,11 +2,20 @@
 using Client.View;
 using System.Windows.Controls;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Client.Extensions
 {
     static class Ext
     {
+        public static List<UserUITabItem> GetTabs(this TabControl control)
+        {
+            var array = new List<UserUITabItem>();
+            foreach (var item in control.Items)
+                array.Add(item as UserUITabItem);
+            return array;
+        }
+
         public static UserTabItem GetSelectTab(this TabControl control)
         {
             UserUITabItem tab = null;
