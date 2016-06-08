@@ -103,7 +103,11 @@ namespace Client
         {
             var roomName = args[0].ToString();
             if (tabControl.Exists(roomName) == null)
+            {
                 tabControl.AddTab(roomName);
+                var olo = OloProtocol.GetOlo("get_history", roomName);
+                Network.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
+            }
         }
 
         [OloField(Name = "push_message")]
