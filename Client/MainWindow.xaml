@@ -18,7 +18,8 @@
         <Menu VerticalAlignment="Top" Grid.Column="0" Grid.Row="0" Margin="-3,0,-3,0">
             <MenuItem Header="Файл">
                 <MenuItem Name="roomsButton" Header="Комнаты" Click="roomsButton_Click"/>
-                <MenuItem Name="sendFile" Header="Прикрепить..." Click="sendFile_Click"/>
+                <MenuItem Name="sendFile" Header="Отправить файл" Click="sendFile_Click"/>
+                <MenuItem Name="relogin" Header="Перезайти..."></MenuItem>
                 <Separator/>
                 <MenuItem Name="exitButton" Header="Выход"/>
             </MenuItem>
