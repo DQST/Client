@@ -21,6 +21,7 @@ namespace Client
         private ConfigFile config;
         private Network net;
         private bool bridgeWork = true;
+        private Login login;
 
         public MainWindow()
         {
@@ -32,6 +33,7 @@ namespace Client
             };
 
             exitButton.Click += (s, e) => OnClosed(e);
+            relogin.Click += (s, e) => { Hide(); login.Show(); };
             inputTextBox.KeyUp += (s, e) =>
             {
                 if (e.Key == Key.Enter)
@@ -65,7 +67,7 @@ namespace Client
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             Hide();
-            var login = new Login();
+            login  = new Login();
             login.Owner = this;
             login.Show();
         }
