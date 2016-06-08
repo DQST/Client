@@ -29,6 +29,13 @@ namespace Client.View
             InitializeComponent();
             service = new OloService(this);
 
+            if (Properties.Settings.Default.Checked)
+            {
+                login.Text = Properties.Settings.Default.User_login;
+                pass.Password = Properties.Settings.Default.User_password;
+                saveSettings.IsChecked = Properties.Settings.Default.Checked;
+            }
+
             Closing += (s, e) => Owner.Close();
 
             Network.OnReceive += (s, e) =>
@@ -49,6 +56,18 @@ namespace Client.View
                 {
                     var olo = OloProtocol.GetOlo("login", login.Text, pass.Password);
                     Network.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
+                    if (saveSettings.IsChecked.Value && saveSettings.IsChecked.HasValue)
+                    {
+                        Properties.Settings.Default.User_login = login.Text;
+                        Properties.Settings.Default.User_password = pass.Password;
+                        Properties.Settings.Default.Checked = true;
+                        Properties.Settings.Default.Save();
+                    }
+                    else
+                    {
+                        Properties.Settings.Default.Checked = false;
+                        Properties.Settings.Default.Save();
+                    }
                 }
             };
         }
