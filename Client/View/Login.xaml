@@ -14,14 +14,25 @@
                     HorizontalAlignment="Right" 
                     BorderBrush="#FFDDDDDD" 
                     Background="#FFDDDDDD" 
-                    Content="&#9881;"/>
+                    Content="&#9881;"
+                    ToolTip="Настройки"/>
             <TextBlock>Логин:</TextBlock>
             <TextBox Name="login"/>
             <TextBlock>Пароль:</TextBlock>
             <PasswordBox Name="pass"/>
-            <WrapPanel Margin="0,10">
-                <Button Name="enterButton" Width="80" Height="25" HorizontalAlignment="Left" IsDefault="True">Войти</Button>
-                <TextBlock Margin="10,4,0,0"><Hyperlink Click="linkClick">Регистрация</Hyperlink></TextBlock>
+            <Separator Background="White"/>
+            <CheckBox Name="saveSettings" 
+                      IsThreeState="False" 
+                      IsChecked="False" 
+                      ClickMode="Release"
+                      ToolTip="Сохранить логин и пароль, небезопасно.">Запомнить</CheckBox>
+            <WrapPanel Margin="0,8">
+                <Button Name="enterButton" 
+                        Width="80" 
+                        Height="25" 
+                        HorizontalAlignment="Left" 
+                        IsDefault="True">Войти</Button>
+                <TextBlock Margin="10,4,0,0"><Hyperlink Click="linkClick" ToolTip="Создать аккаунт">Регистрация</Hyperlink></TextBlock>
             </WrapPanel>
         </StackPanel>
     </Grid>
