@@ -67,7 +67,7 @@ namespace Client
             Hide();
             var login = new Login();
             login.Owner = this;
-            login.ShowDialog();
+            login.Show();
         }
 
         private void Bridge(object o)
