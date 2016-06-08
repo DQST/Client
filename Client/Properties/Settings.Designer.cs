@@ -34,5 +34,41 @@ namespace Client.Properties {
                 this["UserID"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string User_login {
+            get {
+                return ((string)(this["User_login"]));
+            }
+            set {
+                this["User_login"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string User_password {
+            get {
+                return ((string)(this["User_password"]));
+            }
+            set {
+                this["User_password"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Checked {
+            get {
+                return ((bool)(this["Checked"]));
+            }
+            set {
+                this["Checked"] = value;
+            }
+        }
     }
 }
