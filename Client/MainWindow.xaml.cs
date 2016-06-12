@@ -8,10 +8,8 @@ using Client.Extensions;
 using System.Windows.Input;
 using Microsoft.Win32;
 using Client.View;
-using System.Windows.Controls;
 using System.IO;
 using System.Collections;
-using System.Collections.Generic;
 
 namespace Client
 {
@@ -74,7 +72,7 @@ namespace Client
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             Hide();
-            login  = new Login();
+            login = new Login();
             login.Owner = this;
             login.Show();
         }
@@ -133,7 +131,7 @@ namespace Client
         private void SetNickname(params object[] args)
         {
             var oldConfig = Config.GlobalConfig;
-            Config.GlobalConfig = new ConfigFile(oldConfig.LocalHost.ToString(), 
+            Config.GlobalConfig = new ConfigFile(oldConfig.LocalHost.ToString(),
                 oldConfig.RemoteHost.ToString(), args[0].ToString());
             Title = $"Chat v0.1 @ {args[0].ToString()}";
         }
