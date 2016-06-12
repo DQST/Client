@@ -52,3 +52,9 @@ D:\Диплом\Client_v0.1\Client\obj\Release\View\DownloadButton.g.cs
 D:\Диплом\Client_v0.1\Client\obj\Release\View\DownloadButton.baml
 D:\Диплом\Client_v0.1\Client\obj\Release\View\MProgressBar.g.cs
 D:\Диплом\Client_v0.1\Client\obj\Release\View\MProgressBar.baml
+D:\Диплом\Client_v0.1\Client\obj\Release\View\Login.g.cs
+D:\Диплом\Client_v0.1\Client\obj\Release\View\Register.g.cs
+D:\Диплом\Client_v0.1\Client\obj\Release\View\UserItem.g.cs
+D:\Диплом\Client_v0.1\Client\obj\Release\View\Login.baml
+D:\Диплом\Client_v0.1\Client\obj\Release\View\Register.baml
+D:\Диплом\Client_v0.1\Client\obj\Release\View\UserItem.baml
