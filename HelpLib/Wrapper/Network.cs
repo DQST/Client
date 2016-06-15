@@ -18,13 +18,20 @@ namespace HelpLib.Wrapper
         public Action<T> Callback { get; set; }
     }
 
+    public enum State : int
+    {
+        NONE,
+        CREATE_FILE,
+        LOAD_FILE,
+        WRITE_IN_SELECT_FILE,
+        SELECT_FILE_PARTS,
+    }
+
     public class Network : IDisposable
     {
         private static Network instance;
         private static UdpClient udpClient;
         private static bool work;
-        private static int i = 0;
-        const int bufferSize = 1028;
 
         public static bool IsWork { get { return work; } }
         public static event EventHandler<UdpReceiveResult> OnReceive;
@@ -75,7 +82,21 @@ namespace HelpLib.Wrapper
             return r;
         }
 
-        public static async Task<bool> LoadFile(byte[] data, IPEndPoint endPoint, Action<long> callbackMax, Action<long> callbackSetValue)
+        public static long GetParts(string path)
+        {
+            long counts = 0;
+            FileInfo info = new FileInfo(path);
+            var fileName = info.Name;
+            var fileSize = info.Length;
+
+            if (fileSize <= 1024)
+                counts = 1;
+            else
+                counts = fileSize / 1024;
+            return counts;
+        }
+
+        public static async Task<bool> LoadFile(string fileName, IPEndPoint endPoint, Action<long> callbackMax, Action<long> callbackSetValue)
         {
             var tcpClient = new TcpClient(AddressFamily.InterNetwork);
 
@@ -92,67 +113,48 @@ namespace HelpLib.Wrapper
             if (tcpClient.Connected)
             {
                 var stream = tcpClient.GetStream();
-                stream.Write(data, 0, data.Length);
-                byte[] buffer = new byte[bufferSize];
+                SendCommand("loadfile", tcpClient);
+                SendCommand(fileName, tcpClient);
+
+                byte[] buffer = new byte[1024];
                 long count = 0, part = 0;
 
                 var path = Environment.CurrentDirectory + "\\Downloads\\";
+                if (!File.Exists(path + fileName))
+                    File.Create(path + fileName).Close();
 
-                if (!File.Exists(path + $".file_{i}"))
-                    File.Create(path + $".file_{i}").Close();
+                await stream.ReadAsync(buffer, 0, buffer.Length);
+                var str = Encoding.UTF8.GetString(buffer);
+                var size = long.Parse(str);
+                count = size / 1024;
+                callbackMax(count);
 
-                while (await stream.ReadAsync(buffer, 0, buffer.Length) != 0)
+                try
                 {
-                    var head = Encoding.UTF8.GetString(buffer, 0, 4);
-                    if (head == "0000")
+                    using (FileStream file = new FileStream(path + fileName, FileMode.Append))
                     {
-                        var s = Encoding.UTF8.GetString(buffer).Split(':');
-                        count = long.Parse(s[1]);
-                        callbackMax(count);
-                    }
-                    else if (head == "0001")
-                    {
-                        FileStream file = new FileStream(path + $".file_{i}", FileMode.Append);
-                        await file.WriteAsync(buffer, 4, buffer.Length - 4);
-                        file.Close();
-                        if (part < count)
-                            callbackSetValue(++part);
-                    }
-                    else if (head == "0002")
-                    {
-                        try
+                        while (await stream.ReadAsync(buffer, 0, buffer.Length) != 0)
                         {
-                            var s = Encoding.UTF8.GetString(buffer).Split(':');
-                            File.Move(path + $".file_{i}", path + s[1]);
-                            ++i;
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show(ex.Message);
+                            if (buffer.Length == 1024)
+                            {
+                                await file.WriteAsync(buffer, 0, buffer.Length);
+                                if (part <= count)
+                                    callbackSetValue(++part);
+                                var buf = Encoding.UTF8.GetBytes("NEXT");
+                                stream.Write(buf, 0, buf.Length);
+                            }
                         }
                     }
                 }
-
-                stream.Close();
-                tcpClient.Close();
+                catch { return false; }
+                finally
+                {
+                    stream.Close();
+                    tcpClient.Close();
+                }
                 return true;
             }
             return false;
-        }
-
-        public static long GetParts(string path)
-        {
-            long counts = 0;
-            FileInfo info = new FileInfo(path);
-            var fileName = info.Name;
-            var fileSize = info.Length;
-
-            if (fileSize <= bufferSize)
-                counts = 1;
-            else
-                counts = fileSize / bufferSize;
-
-            return counts;
         }
 
         public static void SendFile(string path, string room, Action<long> callback)
@@ -171,15 +173,7 @@ namespace HelpLib.Wrapper
 
             if (f != null && File.Exists(f.FilePath))
             {
-                FileInfo info = new FileInfo(f.FilePath);
-                var fileName = info.Name;
-                var fileSize = info.Length;
-                long counts;
-
-                if (fileSize <= bufferSize)
-                    counts = 1;
-                else
-                    counts = fileSize / bufferSize;
+                var counts = GetParts(f.FilePath);
 
                 var tcpClient = new TcpClient(AddressFamily.InterNetwork);
 
@@ -196,34 +190,55 @@ namespace HelpLib.Wrapper
                 if (tcpClient.Connected)
                 {
                     NetworkStream stream = tcpClient.GetStream();
-                    var buffer = new byte[bufferSize];
+                    var buffer = new byte[1024];
+                    FileInfo info = new FileInfo(f.FilePath);
 
-                    buffer[0] = 48;
-                    buffer[1] = 48;
-                    buffer[2] = 48;
-                    buffer[3] = 49;
-                    using (FileStream file = new FileStream(f.FilePath, FileMode.Open))
+                    SendCommand("create", tcpClient);
+                    SendCommand(info.Name, tcpClient);
+                    SendCommand("writeinselectfile", tcpClient);
+
+                    try
                     {
-                        while (file.Read(buffer, 4, buffer.Length - 4) > 0)
+                        using (FileStream file = new FileStream(f.FilePath, FileMode.Open))
                         {
-                            send:
-                            int count = tcpClient.Client.Send(buffer, 0, buffer.Length, SocketFlags.None);
-                            if (!count.Equals(buffer.Length))
-                                goto send;
+                            while (file.Read(buffer, 0, buffer.Length) > 0)
+                            {
+                                var buf = new byte[1024];
+                                stream.Read(buf, 0, buf.Length);
+                                var com = Encoding.UTF8.GetString(buf);
+                                if (com.IndexOf("NEXT") != -1)
+                                {
+                                    send:
+                                    int count = tcpClient.Client.Send(buffer, 0, buffer.Length, SocketFlags.None);
+                                    if (!count.Equals(buffer.Length))
+                                        goto send;
 
-                            if (parts < counts)
-                                f.Callback(++parts);
+                                    if (parts < counts)
+                                        f.Callback(++parts);
+                                }
+                            }
+                            var olo = OloProtocol.GetOlo("file_load", f.RoomName, 
+                                Config.Config.GlobalConfig.UserName, info.Name);
+                            Send(Encoding.UTF8.GetBytes(olo), Config.Config.GlobalConfig.RemoteHost);
                         }
-                        buffer = Encoding.UTF8.GetBytes($"0002:{info.Name}");
-                        stream.Write(buffer, 0, buffer.Length);
-                        var olo = OloProtocol.GetOlo("file_load", f.RoomName, Config.Config.GlobalConfig.UserName, fileName);
-                        var data = Encoding.UTF8.GetBytes(olo);
-                        Send(data, Config.Config.GlobalConfig.RemoteHost);
                     }
-                    stream.Close();
-                    tcpClient.Close();
+                    finally
+                    {
+                        stream.Close();
+                        tcpClient.Close();
+                    }
                 }
             }
+        }
+
+        private static void SendCommand(string message, TcpClient tcpClient)
+        {
+            var buf = Encoding.UTF8.GetBytes(message);
+            s:
+            int count = tcpClient.Client.Send(buf, 0, buf.Length, SocketFlags.None);
+            if (!count.Equals(buf.Length))
+                goto s;
+            Thread.Sleep(100);
         }
 
         public async void Run()

@@ -2,9 +2,3 @@ D:\Диплом\Client\HelpLib\bin\Release\HelpLib.dll
 D:\Диплом\Client\HelpLib\bin\Release\HelpLib.pdb
 D:\Диплом\Client\HelpLib\obj\Release\HelpLib.dll
 D:\Диплом\Client\HelpLib\obj\Release\HelpLib.pdb
-d:\Диплом\Client_v0.1\HelpLib\bin\Release\HelpLib.dll
-d:\Диплом\Client_v0.1\HelpLib\bin\Release\HelpLib.pdb
-d:\Диплом\Client_v0.1\HelpLib\bin\Release\Newtonsoft.Json.dll
-d:\Диплом\Client_v0.1\HelpLib\bin\Release\Newtonsoft.Json.xml
-d:\Диплом\Client_v0.1\HelpLib\obj\Release\HelpLib.dll
-d:\Диплом\Client_v0.1\HelpLib\obj\Release\HelpLib.pdb

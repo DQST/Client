@@ -12,19 +12,19 @@ namespace Client.View
             InitializeComponent();
         }
 
-        public MProgressBar(long max) : this()
+        public MProgressBar(long maximum) : this()
         {
-            bar.Maximum = max;
+            bar.Maximum = maximum;
         }
 
-        public void SetMaximum(long max)
+        public void SetMaximum(long value)
         {
-            bar.Maximum = max;
+            bar.Dispatcher.Invoke(() => bar.Maximum = value);
         }
 
-        public void SetValue(long v)
+        public void SetValue(long value)
         {
-            bar.Dispatcher.Invoke(() => bar.Value = v);
+            bar.Dispatcher.Invoke(() => bar.Value = value);
         }
     }
 }

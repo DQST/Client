@@ -10,6 +10,7 @@ using Microsoft.Win32;
 using Client.View;
 using System.IO;
 using System.Collections;
+using System.Text.RegularExpressions;
 
 namespace Client
 {
@@ -149,7 +150,7 @@ namespace Client
                 {
                     var bar = new MProgressBar();
                     tabControl.PushMessage(roomName, bar);
-                    var r = await Network.LoadFile($"0003:{fileName}".ToBytes(), Config.GlobalConfig.RemoteHost, bar.SetMaximum, bar.SetValue);
+                    var r = await Network.LoadFile(fileName, Config.GlobalConfig.RemoteHost, bar.SetMaximum, bar.SetValue);
                     if (r) tabControl.PushMessage(roomName, $"\"{fileName}\" загружен!");
                 };
                 tabControl.PushMessage(roomName, $"{userName}:");
@@ -157,12 +158,13 @@ namespace Client
             }
         }
 
+        // отправляем сообщение
         private void sendButton_Click(object sender, RoutedEventArgs e)
         {
             var text = inputTextBox.Text;
             inputTextBox.Focus();
             inputTextBox.Clear();
-
+            
             var tab = tabControl.GetSelectTab();
             if (tab != null)
             {
@@ -170,12 +172,14 @@ namespace Client
                 text = text.TrimEnd('\n', '\r');
                 if (!string.IsNullOrWhiteSpace(text))
                 {
+                    // получаем сообщение и отправляем его
                     var olo = OloProtocol.GetOlo("broadcast_all_in_room", roomName, Config.GlobalConfig.UserName, text);
                     Network.Send(olo.ToBytes(), Config.GlobalConfig.RemoteHost);
                 }
             }
         }
 
+        // показать список комнат
         private void roomsButton_Click(object sender, RoutedEventArgs e)
         {
             var rooms = new Rooms();
@@ -183,6 +187,7 @@ namespace Client
             rooms.ShowDialog();
         }
 
+        // показать настройки
         private void settingsButton_Click(object sender, RoutedEventArgs e)
         {
             var settings = new Settings();
@@ -191,43 +196,51 @@ namespace Client
             Title = $"Chat v0.1 @ {Config.GlobalConfig.UserName}";
         }
 
+        // чистим все
         public void Dispose()
         {
             bridgeWork = false;
+            // сохраняем конфиг на диск
             Config.Save("settings.json", Config.GlobalConfig);
             Network.OnReceive -= Receive;
             net.Dispose();
         }
 
+        // отправляем файл
         private void sendFile_Click(object sender, RoutedEventArgs e)
         {
+            // выбираем файл
             OpenFileDialog fileDialog = new OpenFileDialog();
             fileDialog.Filter = "Все файлы (*.*)|*.*|Текстовые файлы (*.txt, *.doc, *.docx)|*.txt;*.doc;*docx|Изображения (*.png, *.jpeg, *jpg, *.bmp)|*.png;*.jpeg;*.bmp;*.jpg";
             fileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             if (fileDialog.ShowDialog() == true)
             {
+                // получаем путь до файла
                 var filePath = fileDialog.FileName;
                 var tab = tabControl.GetSelectTab();
                 if (tab != null)
                 {
+                    // считаем количество частей файла
                     var count = Network.GetParts(filePath);
+                    // создаем прогресс бар
                     var bar = new MProgressBar(count);
                     tabControl.PushMessage(tab.Header.Text, $"{Config.GlobalConfig.UserName}: отправка файла: \"{fileDialog.SafeFileName}\"");
+                    // отображаем прогресс бар в listBox-е
                     tabControl.PushMessage(tab.Header.Text, bar);
+                    // запускаем поток для отправки файлов
                     Network.SendFile(filePath, tab.Header.Text, bar.SetValue);
                 }
             }
         }
 
+        // показываем справку
         private void showHelp_Click(object sender, RoutedEventArgs e)
         {
             var files = Directory.GetFiles(Environment.CurrentDirectory);
+            var options = RegexOptions.ECMAScript | RegexOptions.IgnoreCase | RegexOptions.Compiled;
             foreach (var file in files)
             {
-                if (System.Text.RegularExpressions.Regex.IsMatch(file, @"(.)\w+\.chm",
-                    System.Text.RegularExpressions.RegexOptions.ECMAScript |
-                    System.Text.RegularExpressions.RegexOptions.IgnoreCase |
-                    System.Text.RegularExpressions.RegexOptions.Compiled))
+                if (Regex.IsMatch(file, @"\.chm$", options))
                 {
                     System.Diagnostics.Process.Start(file);
                     return;
