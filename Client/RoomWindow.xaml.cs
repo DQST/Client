@@ -43,7 +43,7 @@ namespace Client
 
         private void CreateButton_Click(object sender, RoutedEventArgs e)
         {
-            var input = new InputDialog("Create room", "Room name:");
+            var input = new InputDialog();
             input.ShowDialog();
             if (input.DialogResult.HasValue && input.DialogResult.Value)
             {

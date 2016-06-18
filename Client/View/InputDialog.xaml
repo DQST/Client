@@ -5,7 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Client.View"
         mc:Ignorable="d"
-        Title="InputDialog" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+        Title="Создать" 
+        SizeToContent="WidthAndHeight" 
+        WindowStartupLocation="CenterScreen" 
+        ResizeMode="NoResize">
     <Grid Margin="15">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -17,7 +20,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Label Name="lblQuestion">Question:</Label>
+        <Label Name="lblQuestion">Имя комнаты:</Label>
         <TextBox Name="txtAnswer" Grid.Row="1" MinWidth="250"/>
         <CheckBox Name="flag" Grid.Row="2" IsThreeState="False" Content="Закрытая"/>
         <StackPanel Name="stackPanel" Grid.Row="3" Visibility="Collapsed">

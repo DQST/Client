@@ -40,12 +40,6 @@ namespace Client.View
             };
         }
 
-        public InputDialog(string title, string header) : this()
-        {
-            Title = title;
-            lblQuestion.Content = header;
-        }
-
         private void Flag_Checked(object sender, RoutedEventArgs e)
         {
             if (flag.IsChecked.Value == true)
